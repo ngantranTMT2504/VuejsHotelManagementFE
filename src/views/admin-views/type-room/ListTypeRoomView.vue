@@ -64,14 +64,6 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-// const typeRooms = ref([
-//     { ID: 1, typeName: 'Deluxe', Price: 500000, capacity: 2, description: 'Phòng rộng rãi với tầm nhìn đẹp' },
-//     { ID: 2, typeName: 'Standard', Price: 300000, capacity: 2, description: 'Phòng tiêu chuẩn với tiện nghi cơ bản' },
-//     { ID: 3, typeName: 'Suite', Price: 1000000, capacity: 4, description: 'Phòng cao cấp với đầy đủ tiện nghi' },
-//     { ID: 4, typeName: 'Family', Price: 800000, capacity: 4, description: 'Phòng gia đình rộng rãi, thoải mái' },
-//     { ID: 5, typeName: 'Single', Price: 200000, capacity: 1, description: 'Phòng đơn nhỏ gọn, tiện lợi' }
-// ]);
-
 const typeRooms = ref({
     id: null,
     name: "",

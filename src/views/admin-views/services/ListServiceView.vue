@@ -27,7 +27,9 @@
                         <td>{{ service?.name }}</td>
                         <td>{{ service?.price }}</td>
                         <td>{{ service?.description }}</td>
-                        <td>{{ service?.image }}</td>
+                        <td>
+                            <img :src="service?.imageService" alt="" width="100px" height="100px">
+                        </td>
                         <td>
                             <div class="action btn d-flex gap-4">
                                 <a href="" @click="editService(service?.id)" class="btn btn-warning text-dark px-2 py-1 rounded"><i
@@ -74,7 +76,7 @@ const services= ref({
     id: null,
     name: "",
     price: null,
-    image: "",
+    imageService: "",
     description: ""
 })
 

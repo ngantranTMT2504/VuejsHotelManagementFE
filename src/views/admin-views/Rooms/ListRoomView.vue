@@ -105,12 +105,12 @@ const roomList = async () => {
         }
 
     } catch (error) {
-        console.log("Lỗi!" + error);
+        console.log( error);
     }
 }
 
 const editRoom = (id) => {
-    router.push(`/admin/rooms/edit-room/${id}`);
+    router.push(`/admin/rooms-management/edit-room/${id}`);
 }
 
 const deleteRoom = (id) => {
@@ -121,7 +121,7 @@ const deleteRoom = (id) => {
             alert("Xóa thành công")
             roomList()
         } catch (error) {
-            console.log("Lỗi!" + error);
+            console.log(error);
         }
     }
 }
