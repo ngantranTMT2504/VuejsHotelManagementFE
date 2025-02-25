@@ -1,7 +1,8 @@
 <template >
     <main>
-        <div class="bg-light p-5 mb-5">
-            <h3 class=" text-dark">Service</h3>
+        <div class="pb-5 position-relative">
+            <h1 class="text-dark position-absolute title-room ">Services</h1>
+            <img :src="ServiceBanner" alt="" width="100%">
         </div>
         <div class="container room-wrapper ">
             <div class="row">
@@ -694,8 +695,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 fixed-form">
-                    <div class="form-wrapper py-5 rounded-4 bg-light">
+                <div class="col-lg-4 text-white">
+                    <div class="form-wrapper py-5 rounded-4 ">
                         <h3 class="mb-4 text-center">Your Reservation</h3>
                         <form class="px-5">
                             <div class="mb-3">
@@ -715,6 +716,7 @@
                                 </select>
                             </div>
                             <div class="row mb-3">
+                                <label class="form-label fw-semibold">Peoples</label>
                                 <div class="col-lg mb-6 mb-lg-0">
                                     <select class="form-select">
                                         <option selected>Adults</option>
@@ -738,12 +740,57 @@
                                     </select>
                                 </div>
                             </div>
-                            <div>
-                                <a type="submit" class="main-btn">Booking</a>
-
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Type room</label>
+                                <select class="form-select" aria-label="Default select example">
+                                    <option value="Standard Room" selected>Standard Room</option>
+                                    <option value="Superior Room">Superior Room </option>
+                                    <option value="Deluxe Room"> Deluxe Room </option>
+                                    <option value="Suite Room"> Suite Room </option>
+                                    <option value="Executive Suite"> Executive Suite </option>
+                                </select>
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Extra Services</label>
+                                <div class="form-check">
+                                    <input class="form-check-input custom-check" type="checkbox" value=""
+                                        id="SpaService">
+                                    <label class="form-check-label" for="SpaService">
+                                        Spa, beauty & Health
+                                    </label>
+                                    <span class="price">$20</span>
+                                </div>
+                                <div class="form-check ">
+                                    <input class="form-check-input custom-check" type="checkbox" value=""
+                                        id="RestaurentService">
+                                    <label class="form-check-label" for="RestaurentService">
+                                        Restaurent
+                                    </label>
+                                    <span class="price">$20</span>
+                                </div>
+                                <div class="form-check ">
+                                    <input class="form-check-input custom-check" type="checkbox" value=""
+                                        id="SwimmingPoolService">
+                                    <label class="form-check-label" for="SwimmingPoolService">
+                                        Swimming Pool
+                                    </label>
+                                    <span class="price">$20</span>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input custom-check" type="checkbox" value=""
+                                        id="ConferenceService">
+                                    <label class="form-check-label" for="ConferenceService">
+                                        Conference Hall
+                                    </label>
+                                    <span class="price ">$20</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <p class="fw-semibold text-white">You price</p>
+                                <p class="text-white">Total : $70</p>
+                            </div>
+                            <button type="submit" class="btn-payment w-100">Pay for your Booking</button>
                         </form>
-
                     </div>
                 </div>
             </div>
@@ -751,7 +798,7 @@
     </main>
 </template>
 <script setup>
-
+import ServiceBanner from '@/assets/images/services/service-banner.jpg'
 </script>
 <style >
     

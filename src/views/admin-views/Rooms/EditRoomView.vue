@@ -9,7 +9,7 @@
 
             <div class="mb-3">
                 <label for="typeRoom" class="form-label fw-semibold">Loại phòng:</label>
-                <select id="typeRoom" class="form-select" required>
+                <select id="typeRoom" v-model="room.typeRoomId" class="form-select" required>
                     <option value="" disabled>Chọn loại phòng</option>
                     <option v-for="type in typeRooms" :value="type?.id">{{ type?.name }}</option>
                 </select>
@@ -17,7 +17,7 @@
 
             <div class="mb-3">
                 <label for="status" class="form-label fw-semibold">Trạng thái:</label>
-                <select id="status" class="form-select" required>
+                <select id="status" v-model="room.status"  class="form-select" required>
                     <option value=0>Trống</option>
                     <option value=1>Đã đặt</option>
                     <option value=2>Cần dọn dẹp</option>
@@ -27,7 +27,7 @@
 
             <div class="d-flex gap-3 justify-content-end">
                 <button type="submit" class="btn btn-primary">Edit</button>
-                <button type="button" class="btn btn-success">clear</button>
+                <button type="button" class="btn btn-success" @click="router.back()">Back</button>
             </div>
         </form>
     </div>
@@ -51,6 +51,7 @@ const typeRooms = ref({
     description: ""
 })
 const API_GETALL = "http://localhost:5287/api/TypeRoom/GetTypeRooms"
+
 const typeRoomList = async () => {
     try {
         const response = await axios.get(API_GETALL);
@@ -78,7 +79,8 @@ const editRoom = async() => {
   }
 }
 
-onMounted(typeRoomList,fetchRoom);
+onMounted(fetchRoom);
+onMounted(typeRoomList);
 
 </script>
 <style>

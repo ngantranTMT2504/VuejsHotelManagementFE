@@ -12,13 +12,13 @@
                         incidunt maiores!</p>
                 </div>
                 <div class="mb-4">
-                    <h5 class="fw-semibold">Call us +31 555 777 83 </h5>
+                    <h5 class="fw-semibold">Call us +84 123 456 798</h5>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae quam placeat, sit, veritatis
                         enim rem ipsa nostrum praesentium sint ea unde quia maiores pariatur id? Deserunt commodi natus
                         incidunt maiores!</p>
                 </div>
                 <div class="mb-4">
-                    <h5 class="fw-semibold">Visit us on Via Venti Settembre, Roma </h5>
+                    <h5 class="fw-semibold">Visit us on </h5>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae quam placeat, sit, veritatis
                         enim rem ipsa nostrum praesentium sint ea unde quia maiores pariatur id? Deserunt commodi natus
                         incidunt maiores!</p>

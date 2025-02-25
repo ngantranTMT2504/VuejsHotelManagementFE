@@ -17,7 +17,7 @@
 
             <div class="d-flex gap-3 justify-content-end">
                 <button type="submit" class="btn btn-primary">Edit</button>
-                <button type="reset" class="btn btn-success" @click="router.back()">clear</button>
+                <button type="reset" class="btn btn-success" @click="router.back()">Back</button>
             </div>
         </form>
     </div>

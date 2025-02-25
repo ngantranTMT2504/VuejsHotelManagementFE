@@ -13,8 +13,8 @@
                         <div class="card p-0 border-0 rounded-0">
                             <img :src="blog1" alt="">
                             <div class="blog-content bg-white p-4">
-                                <h5 class="text-decoration-underline mb-4">Relax Zone</h5>
-                                <h6>By Admin - February 18, 2022</h6>
+                                <h5 class="text-decoration-underline mb-4">It’s Breakfast Time!</h5>
+                                <h6>By Admin - February 18, 2024</h6>
                                 <p class="mt-2">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque,
                                     cumque nostrum! A magni tenetur perferendis.</p>
                                 <a href="#" class="main-btn mt-2">Read More</a>
@@ -25,8 +25,8 @@
                         <div class="card p-0 border-0 rounded-0">
                             <img :src="blog2" alt="">
                             <div class="blog-content bg-white p-4">
-                                <h5 class="text-decoration-underline mb-4">Relax Zone</h5>
-                                <h6>By Admin - February 18, 2022</h6>
+                                <h5 class="text-decoration-underline mb-4">Wild Camping Trip</h5>
+                                <h6>By Admin - February 18, 2024</h6>
                                 <p class="mt-2">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque,
                                     cumque nostrum! A magni tenetur perferendis.</p>
                                 <a href="#" class="main-btn mt-2">Read More</a>
@@ -69,8 +69,8 @@ import brand3 from '@/assets/images/partners/brand3.webp'
 import brand4 from '@/assets/images/partners/brand4.webp'
 import brand5 from '@/assets/images/partners/brand5.webp'
 import brand6 from '@/assets/images/partners/brand6.webp'
-import blog1 from '@/assets/images/blog/blog1.webp'
-import blog2 from '@/assets/images/blog/blog2.webp'
+import blog1 from '@/assets/images/blog/blog-img-1.jpg'
+import blog2 from '@/assets/images/blog/blog-img-3.jpg'
 
 </script>
 <style >

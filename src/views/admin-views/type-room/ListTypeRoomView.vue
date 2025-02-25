@@ -18,6 +18,7 @@
                             <th scope="col">Price per night</th>
                             <th scope="col">Capacity</th>
                             <th scope="col">description</th>
+                            <th scope="col">image</th>
                             <th scope="col" class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -28,6 +29,9 @@
                             <td>{{ type?.price }}</td>
                             <td>{{ type?.capacity }}</td>
                             <td>{{ type?.description }}</td>
+                            <td>
+                                <img :src="type?.imageRoom" alt="" width="100px" height="100px">
+                            </td>
                             <td>
                                 <div class="action btn d-flex gap-4">
                                     <a href="" @click="editTypeRoom(type.id)" class="btn btn-warning text-dark px-2 py-1 rounded"><i
@@ -69,7 +73,8 @@ const typeRooms = ref({
     name: "",
     price: null,
     capacity: null,
-    description: ""
+    description: "",
+    imageRoom: ""
 })
 
 const router = useRouter();

@@ -19,10 +19,10 @@
         <input type="file" id="serviceImage" @change="handleFileUpload" class="form-control" accept="image/*" />
       </div>
       <div v-if="imageUrl">
-      <p>Ảnh đã upload:</p>
-      <img :src="imageUrl" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
-    </div>
-     
+        <p>Ảnh đã upload:</p>
+        <img :src="imageUrl" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
+      </div>
+
       <div class="d-flex gap-3 justify-content-end">
         <button type="submit" class="btn btn-primary">Create</button>
         <button type="reset" class="btn btn-success">clear</button>
@@ -41,8 +41,8 @@ const price = ref(null);
 const description = ref(null);
 const imageUrl = ref(null);
 
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload"; 
-const UPLOAD_PRESET = "hotel_preset"; 
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload";
+const UPLOAD_PRESET = "hotel_preset";
 
 const API_ADD = "http://localhost:5287/api/Service/AddService"
 const router = useRouter()
@@ -71,7 +71,7 @@ const createService = async () => {
     name: name.value,
     price: price.value,
     description: description.value,
-    ImageService:imageUrl.value,
+    ImageService: imageUrl.value,
   }
   try {
     await axios.post(API_ADD, service);

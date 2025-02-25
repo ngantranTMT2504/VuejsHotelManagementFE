@@ -3,7 +3,6 @@ import HomeView from "../views/client-views/HomeView.vue";
 import AboutView from "@/views/client-views/AboutView.vue";
 import RoomView from "@/views/client-views/RoomView.vue";
 import ServiceView from "@/views/client-views/ServiceView.vue";
-import TeamView from "@/views/client-views/TeamView.vue";
 import GalleryView from "@/views/client-views/GalleryView.vue";
 import BlogView from "@/views/client-views/BlogView.vue";
 import ContactView from "@/views/client-views/ContactView.vue";
@@ -65,11 +64,7 @@ const router = createRouter({
       name: "service",
       component: ServiceView,
     },
-    {
-      path: "/team",
-      name: "team",
-      component: TeamView,
-    },
+    
     {
       path: "/gallery",
       name: "gallery",

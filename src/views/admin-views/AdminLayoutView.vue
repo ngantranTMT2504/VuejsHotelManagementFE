@@ -8,7 +8,7 @@
         <RouterLink to="/admin/type-rooms" class="sidebar-link">Types Room</RouterLink>
         <RouterLink to="/admin/services-management" class="sidebar-link">Services</RouterLink>
         <RouterLink to="/admin/rooms-management" class="sidebar-link">Rooms</RouterLink>
-        <RouterLink to="/admin/approved-booking" class="sidebar-link">Approved Booking</RouterLink>
+        <RouterLink to="/admin/approved-booking" class="sidebar-link">Booking</RouterLink>
         <RouterLink to="/login" class="sidebar-link">Log out</RouterLink>
     </div>
     <main>
@@ -23,7 +23,7 @@
                 </template>
             </Suspense>
             <!-- Copyright -->
-            <div class="container-fluid copyright-section text-center text-capitalize">
+            <div class="container-fluid fixed-bottom copyright-section text-center text-capitalize">
                 <p class="text-white">Copyright <a href="#">©️ Kim Ngan</a> All Rights Reserved</p>
             </div>
         </div>

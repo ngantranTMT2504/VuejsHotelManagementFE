@@ -1,12 +1,12 @@
 <script setup>
-import AboutImg from '@/assets/images/about/about-img.svg'
+import AboutImg from '@/assets/images/about/team.jpg'
 
 </script>
 <template>
     <!-- About Section -->
     <section id="about" class="about_wrapper">
             <div class="container">
-                <div class="row flex-lg-row flex-column-reverse">
+                <div class="row flex-lg-row flex-column-reverse ">
                     <div class="col-lg-6 text-center text-lg-start">
                         <h3>Welcome to <span>Hotel <br class="d-none d-lg-block"> the haven</span> of your weekend
                         </h3>

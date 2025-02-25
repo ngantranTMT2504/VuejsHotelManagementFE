@@ -28,9 +28,6 @@
                                 <RouterLink class="nav-link" to="/service">Services</RouterLink>
                             </li>
                             <li class="nav-item">
-                                <RouterLink class="nav-link" to="/team">Team</RouterLink>
-                            </li>
-                            <li class="nav-item">
                                 <RouterLink class="nav-link" to="/gallery">Gallery</RouterLink>
                             </li>
                             <li class="nav-item">

@@ -1,7 +1,8 @@
 <template>
     <main>
-        <div class="bg-light p-5 mb-5">
-            <h3 class=" text-dark">Room</h3>
+        <div class="pb-5 position-relative">
+            <h1 class="text-dark position-absolute title-room ">Rooms</h1>
+            <img :src="RoomBanner" alt="" width="100%">
         </div>
         <div class="container room-wrapper ">
             <div class="row">
@@ -694,10 +695,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 fixed-form">
-                    <div class="form-wrapper py-5 rounded-4 bg-light">
+                <div class="col-lg-4 fixed-form text-white">
+                    <div class="form-wrapper py-5 rounded-4">
                         <h3 class="mb-4 text-center">Your Reservation</h3>
-                        <form class="px-5">
+                        <form class="px-5 ">
                             <div class="mb-3">
                                 <label for="check-in" class="form-label fw-semibold">Check-in</label>
                                 <input type="date" class="form-control" id="check-in" required>
@@ -714,7 +715,8 @@
                                     <option value="3"> 3 </option>
                                 </select>
                             </div>
-                            <div class="row mb-3">
+                            <div class="row mb-4">
+                                <label class="form-label fw-semibold">Peoples:</label>
                                 <div class="col-lg mb-6 mb-lg-0">
                                     <select class="form-select">
                                         <option selected>Adults</option>
@@ -722,8 +724,7 @@
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
+                                       
                                     </select>
                                 </div>
                                 <div class="col-lg mb-6 mb-lg-0">
@@ -733,14 +734,11 @@
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
                                     </select>
                                 </div>
                             </div>
-                            <div>
-                                <a type="submit" class="main-btn">Booking</a>
-
+                            <div class="text-center mt-5">
+                                <RouterLink to="/booking" type="submit" class="btn-payment w-100">Booking</RouterLink>
                             </div>
                         </form>
 
@@ -751,18 +749,23 @@
     </main>
 </template>
 <script setup>
+import { RouterLink } from 'vue-router'
 import roomclassic from '@/assets/images/room/classic-double.jpg'
 import roomdeluxe from '@/assets/images/room/deluxe-white-wooden.jpg'
 import roomsignature from '@/assets/images/room/signature-purple.jpg'
 import roomsuite from '@/assets/images/room/rooms-slide-4.jpg'
 import room5 from '@/assets/images/room/bedroom-1.jpg'
-
+import RoomBanner from '@/assets/images/room/room-banner.jpg'
 </script>
 <style>
 fixed-form {
     position: fixed;
+    background-color: var(--secondary-color);
 }
-
+.title-room{
+    top: 45%;
+    left: 45%;
+}
 .room-content .main-btn{
     width: auto;
 }

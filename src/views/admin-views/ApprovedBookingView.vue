@@ -12,7 +12,7 @@
                     <th>Total Rooms</th>
                     <th>Payment Method</th>
                     <th>Payment Amount</th>
-                   
+                    <th>Rooms</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -26,10 +26,11 @@
                     <td>{{ booking.totalRoom }}</td>
                     <td>{{ booking.PaymentMethod }}</td>
                     <td>{{ booking.PaymentAmount }}</td>
+                    <td>{{ booking.Room }}</td>
                     <td>
                         <div class="action btn d-flex gap-4">
-                            <a href="" class="btn btn-warning text-dark px-2 py-1 rounded">
-                                Approved
+                            <a href="" class="btn btn-danger text-dark px-2 py-1 rounded">
+                                Cancel
                             </a>
                         </div>
                     </td>
@@ -52,7 +53,8 @@ const bookings = ref([
         price: '$500.00',
         totalRoom: 2,
         PaymentMethod: 'Credit Card',
-        PaymentAmount: '$550.00'
+        PaymentAmount: '$250.00',
+        Room: '101 , 102'
     },
     {
         ID: 2,
@@ -62,7 +64,8 @@ const bookings = ref([
         price: '$700.00',
         totalRoom: 3,
         PaymentMethod: 'PayPal',
-        PaymentAmount: '$750.00'
+        PaymentAmount: '$350.00',
+         Room: '201 , 202'
     }
 ])
 </script>

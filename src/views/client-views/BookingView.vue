@@ -234,8 +234,8 @@
                         <p>-Check-in time is 12 PM - 2 PM and check-out by 11 AM.</p>
                     </div>
                 </div>
-                <div class="col-lg-4">
-                    <div class="form-wrapper py-5 rounded-4">
+                <div class="col-lg-4 text-white">
+                    <div class="form-wrapper py-5 rounded-4 ">
                         <h3 class="mb-4 text-center">Your Reservation</h3>
                         <form class="px-5">
                             <div class="mb-3">
@@ -255,6 +255,7 @@
                                 </select>
                             </div>
                             <div class="row mb-3">
+                                <label class="form-label fw-semibold">Peoples</label>
                                 <div class="col-lg mb-6 mb-lg-0">
                                     <select class="form-select">
                                         <option selected>Adults</option>
@@ -278,7 +279,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Type room</label>
                                 <select class="form-select" aria-label="Default select example">
@@ -325,10 +325,10 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <p class="fw-semibold">You price</p>
-                                <p>Total : $70</p>
+                                <p class="fw-semibold text-white">You price</p>
+                                <p class="text-white">Total : $70</p>
                             </div>
-                            <button type="submit" class="main-btn w-100">Pay for your Booking</button>
+                            <button type="submit" class="btn-payment w-100">Pay for your Booking</button>
                         </form>
                     </div>
                 </div>
@@ -351,9 +351,25 @@ import BannerBooking2 from '@/assets/images/Booking/room-single-img-11.jpg'
     fill: none;
 }
 
+.btn-payment{
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    font-weight: 700;
+    padding: 10px 0;
+    border-radius: 50px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-payment:hover{
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: 2px solid var(--secondary-color);
+   
+}
 /* Form Booking*/
 .form-wrapper {
-    background-color: rgb(251, 252, 228);
+    background-color: var(--primary-color);
 }
 
 .form-check {

@@ -10,7 +10,7 @@
       </div>
       <div class="mb-3">
         <label for="price" class="form-label fw-semibold">Giá:</label>
-        <input type="text" id="price" v-model="form.price" class="form-control" required>
+        <input type="number" id="price" v-model="form.price" class="form-control" required>
       </div>
       <div class="mb-3">
         <label for="capacity" class="form-label fw-semibold">Sức chứa:</label>
@@ -20,63 +20,94 @@
         <label for="description" class="form-label fw-semibold">Mô tả:</label>
         <textarea id="description" v-model="form.description" class="form-control" required></textarea>
       </div>
+      <div class="mb-3">
+        <label for="roomImage" class="form-label fw-semibold">Hình ảnh:</label>
+        <input type="file" id="roomImage" @change="handleFileUpload" class="form-control" accept="image/*" />
+      </div>
+      <div v-if="form.imageRoom">
+        <p>Ảnh đã upload:</p>
+        <img :src="form.imageRoom" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
+      </div>
       <div class="d-flex gap-3 justify-content-end">
         <button type="submit" class="btn btn-primary">Create</button>
-        <button type="reset" class="btn btn-success">clear</button>
+        <button type="button" class="btn btn-success" @click="resetForm">Clear</button>
       </div>
     </form>
   </div>
 </template>
+
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
-// const name = ref(null);
-// const price = ref(null);
-// const capacity = ref(null);
-// const description = ref(null);
+import validator from 'validator';
 
 const form = ref({
   name: "",
   price: "",
-  capacity:"",
-  description:""
-})
+  capacity: "",
+  description: "",
+  imageRoom: ""
+});
+
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload"; 
+const UPLOAD_PRESET = "hotel_preset"; 
 
 const errors = ref({});
-const API_ADD = "http://localhost:5287/api/TypeRoom/AddTypeRoom"
-const router = useRouter()
+const API_ADD = "http://localhost:5287/api/TypeRoom/AddTypeRoom";
+const router = useRouter();
 
-const validateForm = ()=>{
-  errors.value = {};
+const handleFileUpload = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
 
-  if (validator.isEmpty(String(form.value.name).trim())) {
-        errors.value.name = "Tên sản phẩm không được để trống";
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+
+  try {
+    const response = await axios.post(CLOUDINARY_URL, formData);
+    form.value.imageRoom = response.data.secure_url; 
+    alert("Upload thành công!");
+  } catch (error) {
+    console.error("Lỗi upload ảnh:", error);
+    alert("Upload ảnh thất bại!");
   }
-}
+};
 
-const createTypeRoom = async() => {
+const validateForm = () => {
+  errors.value = {};
+  if (validator.isEmpty(String(form.value.name).trim())) {
+    errors.value.name = "Tên loại phòng không được để trống";
+  }
+};
+
+const createTypeRoom = async () => {
   validateForm();
-  if(Object.keys(errors.value).length > 0) {
+  if (Object.keys(errors.value).length > 0) {
     return;
   }
-
-  // const typeRoom = {
-  //   name : name.value,
-  //   price : price.value,
-  //   capacity : capacity.value,
-  //   description : description.value
-  // }
 
   try {
     await axios.post(API_ADD, form.value);
     alert("Thêm thành công");
     router.push("/admin/type-rooms/list-type-room");
   } catch (error) {
-    console.log("Lỗi");
+    console.error("Lỗi:", error);
+    alert("Thêm thất bại");
   }
-}
+};
 
+const resetForm = () => {
+  form.value = {
+    name: "",
+    price: "",
+    capacity: "",
+    description: "",
+    imageRoom: ""
+  };
+  errors.value = {};
+};
 </script>
+
 <style></style>
