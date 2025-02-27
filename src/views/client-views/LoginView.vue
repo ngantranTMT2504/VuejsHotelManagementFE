@@ -16,11 +16,6 @@
                             <h2 class="mb-4 text-center">Login</h2>
                             <form class="px-5">
                                 <div class="mb-3">
-                                    <label for="fullName" class="form-label">User Name</label>
-                                    <input type="text" class="form-control" id="fullName"
-                                        placeholder="Enter your user name">
-                                </div>
-                                <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" placeholder="Enter your email">
                                 </div>

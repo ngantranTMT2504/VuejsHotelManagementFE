@@ -5,22 +5,25 @@
     <form class="container w-75 my-5" @submit.prevent="editTypeRoom">
       <div class="mb-3">
         <label for="typeName" class="form-label fw-semibold">Tên loại phòng:</label>
-        <input type="text" id="typeName" v-model="typeRoom.name" class="form-control" required>
+        <input type="text" id="typeName" v-model="typeRoom.name" class="form-control" @input="validateField('name')">
         <span class="text-danger error">{{ errors.name }}</span>
       </div>
       <div class="mb-3">
         <label for="price" class="form-label fw-semibold">Giá:</label>
-        <input type="number" id="price" v-model="typeRoom.price" class="form-control" required>
+        <input type="text" id="price" v-model="typeRoom.price" class="form-control" @input="validateField('price')">
         <span class="text-danger error">{{ errors.price }}</span>
       </div>
       <div class="mb-3">
         <label for="capacity" class="form-label fw-semibold">Sức chứa:</label>
-        <input type="number" id="capacity" v-model="typeRoom.capacity" class="form-control" required>
+        <input type="number" id="capacity" v-model="typeRoom.capacity" class="form-control"
+          @input="validateField('capacity')">
         <span class="text-danger error">{{ errors.capacity }}</span>
       </div>
       <div class="mb-3">
         <label for="description" class="form-label fw-semibold">Mô tả:</label>
-        <textarea id="description" v-model="typeRoom.description" class="form-control" required></textarea>
+        <textarea id="description" v-model="typeRoom.description" class="form-control"
+          @input="validateField('description')"></textarea>
+        <span class="text-danger error">{{ errors.description }}</span>
       </div>
       <div class="mb-3">
         <label for="roomImage" class="form-label fw-semibold">Hình ảnh:</label>
@@ -42,9 +45,9 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-// import validator from 'validator';
+import validator from 'validator';
 
-const API_URL_edit = "http://localhost:5287/api/TypeRoom/UpdateTypeRoom";
+const API_URL_EDIT = "http://localhost:5287/api/TypeRoom/UpdateTypeRoom";
 const API_GET_ID = "http://localhost:5287/api/TypeRoom/GetTypeRoom/";
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload";
 const UPLOAD_PRESET = "hotel_preset";
@@ -58,12 +61,11 @@ const typeRoom = ref({
   description: "",
   imageRoom: ""
 });
-
 const errors = ref({});
 
 const fetchTypeRoom = async () => {
   try {
-    const res = await axios.get(API_GET_ID + `${route.params.id}`);
+    const res = await axios.get(API_GET_ID + route.params.id);
     typeRoom.value = res.data;
   } catch (error) {
     console.log("Lỗi lấy dữ liệu:", error);
@@ -90,24 +92,71 @@ const handleFileUpload = async (event) => {
   }
 };
 
-// const validateForm = () => {
-//   errors.value = {};
+// Hàm validate cho form
+const validateForm = () => {
+  errors.value = {};
 
-//   if (validator.isEmpty(String(typeRoom.value.name).trim())) {
-//     errors.value.name = "Tên loại phòng không được để trống";
-//   }
-//   if (validator.isEmpty(String(typeRoom.value.price).trim())) {
-//     errors.value.price = "Giá không được để trống";
-//   }
-//   if (!typeRoom.value.capacity || typeRoom.value.capacity <= 0) {
-//     errors.value.capacity = "Sức chứa phải lớn hơn 0";
-//   }
-// };
+  if (validator.isEmpty(typeRoom.value.name.trim())) {
+    errors.value.name = "Tên loại phòng không được để trống";
+  }
+
+  if (validator.isEmpty(String(typeRoom.value.price).trim())) {
+    errors.value.price = "Giá không được để trống";
+  } else if (!validator.isNumeric(String(typeRoom.value.price))) {
+    errors.value.price = "Giá chỉ được nhập số";
+  }
+
+  if (!typeRoom.value.capacity || typeRoom.value.capacity <= 0) {
+    errors.value.capacity = "Sức chứa phải lớn hơn 0";
+  }
+
+  if (validator.isEmpty(typeRoom.value.description.trim())) {
+    errors.value.description = "Mô tả không được để trống";
+  }
+};
+
+// Hàm validate riêng từng input khi thay đổi giá trị
+const validateField = (field) => {
+  if (field === "name" && validator.isEmpty(typeRoom.value.name.trim())) {
+    errors.value.name = "Tên loại phòng không được để trống";
+  } else if (field === "name") {
+    delete errors.value.name;
+  }
+
+  if (field === "price") {
+    if (validator.isEmpty(String(typeRoom.value.price).trim())) {
+      errors.value.price = "Giá không được để trống";
+    } else if (!validator.isNumeric(String(typeRoom.value.price))) {
+      errors.value.price = "Giá chỉ được nhập số";
+    } else {
+      delete errors.value.price;
+    }
+  }
+
+  if (field === "capacity") {
+    if (!typeRoom.value.capacity || typeRoom.value.capacity <= 0) {
+      errors.value.capacity = "Sức chứa phải lớn hơn 0";
+    } else {
+      delete errors.value.capacity;
+    }
+  }
+
+  if (field === "description" && validator.isEmpty(typeRoom.value.description.trim())) {
+    errors.value.description = "Mô tả không được để trống";
+  } else if (field === "description") {
+    delete errors.value.description;
+  }
+};
 
 const editTypeRoom = async () => {
+  validateForm();
+  if (Object.keys(errors.value).length > 0) {
+    return;
+  }
+
   try {
-    await axios.put(API_URL_edit, typeRoom.value);
-    console.log("image: " +  typeRoom.value.imageRoom);
+    typeRoom.value.price = parseInt(typeRoom.value.price);
+    await axios.put(API_URL_EDIT, typeRoom.value);
     alert("Cập nhật thành công");
     router.push("/admin/type-rooms/list-type-room");
   } catch (error) {

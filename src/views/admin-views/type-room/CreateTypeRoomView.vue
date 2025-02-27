@@ -1,28 +1,33 @@
 <template>
-  <div class="mt-4 my-5">
+  <div class="mx-4 my-5">
     <h3 class="text-dark text-center">Create type room</h3>
-
     <form class="container w-75 my-5" @submit.prevent="createTypeRoom">
       <div class="mb-3">
         <label for="typeName" class="form-label fw-semibold">Tên loại phòng:</label>
-        <input type="text" id="typeName" v-model="form.name" class="form-control" required>
+        <input type="text" id="typeName" v-model="form.name" class="form-control" @input="validateField('name')">
         <span class="text-danger error">{{ errors.name }}</span>
       </div>
       <div class="mb-3">
         <label for="price" class="form-label fw-semibold">Giá:</label>
-        <input type="number" id="price" v-model="form.price" class="form-control" required>
+        <input type="text" id="price" v-model="form.price" class="form-control" @input="validateField('price')">
+        <span class="text-danger error">{{ errors.price }}</span>
       </div>
       <div class="mb-3">
         <label for="capacity" class="form-label fw-semibold">Sức chứa:</label>
-        <input type="number" id="capacity" v-model="form.capacity" class="form-control" required>
+        <input type="number" id="capacity" v-model="form.capacity" class="form-control"
+          @input="validateField('capacity')">
+        <span class="text-danger error">{{ errors.capacity }}</span>
       </div>
       <div class="mb-3">
         <label for="description" class="form-label fw-semibold">Mô tả:</label>
-        <textarea id="description" v-model="form.description" class="form-control" required></textarea>
+        <textarea id="description" v-model="form.description" class="form-control"
+          @input="validateField('description')"></textarea>
+        <span class="text-danger error">{{ errors.description }}</span>
       </div>
       <div class="mb-3">
-        <label for="roomImage" class="form-label fw-semibold">Hình ảnh:</label>
-        <input type="file" id="roomImage" @change="handleFileUpload" class="form-control" accept="image/*" />
+        <label for="image" class="form-label fw-semibold">Hình ảnh:</label>
+        <input type="file" id="image" @change="handleFileUpload" class="form-control" accept="image/*" />
+        <span class="text-danger error">{{ errors.image }}</span>
       </div>
       <div v-if="form.imageRoom">
         <p>Ảnh đã upload:</p>
@@ -50,8 +55,8 @@ const form = ref({
   imageRoom: ""
 });
 
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload"; 
-const UPLOAD_PRESET = "hotel_preset"; 
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload";
+const UPLOAD_PRESET = "hotel_preset";
 
 const errors = ref({});
 const API_ADD = "http://localhost:5287/api/TypeRoom/AddTypeRoom";
@@ -67,7 +72,7 @@ const handleFileUpload = async (event) => {
 
   try {
     const response = await axios.post(CLOUDINARY_URL, formData);
-    form.value.imageRoom = response.data.secure_url; 
+    form.value.imageRoom = response.data.secure_url;
     alert("Upload thành công!");
   } catch (error) {
     console.error("Lỗi upload ảnh:", error);
@@ -75,11 +80,34 @@ const handleFileUpload = async (event) => {
   }
 };
 
-const validateForm = () => {
-  errors.value = {};
-  if (validator.isEmpty(String(form.value.name).trim())) {
+const validateField = (field) => {
+  if (field === "name" && validator.isEmpty(form.value.name.trim())) {
     errors.value.name = "Tên loại phòng không được để trống";
+  } else if (field === "price") {
+    if (validator.isEmpty(form.value.price.trim())) {
+      errors.value.price = "Giá không được để trống";
+    } else if (!validator.isNumeric(form.value.price)) {
+      errors.value.price = "Giá phải là số";
+    } else {
+      delete errors.value.price;
+    }
+  } else if (field === "capacity" && validator.isEmpty(String(form.value.capacity).trim())) {
+    errors.value.capacity = "Sức chứa không được để trống";
+  } else if (field === "description" && validator.isEmpty(form.value.description.trim())) {
+    errors.value.description = "Mô tả không được để trống";
+  } else if (field === "image" && validator.isEmpty(form.value.imageRoom.trim())) {
+    errors.value.name = "Hình ảnh không được để trống";
+  } else {
+    delete errors.value[field];
   }
+};
+
+const validateForm = () => {
+  validateField("name");
+  validateField("price");
+  validateField("capacity");
+  validateField("description");
+  validateField("image");
 };
 
 const createTypeRoom = async () => {
@@ -89,6 +117,7 @@ const createTypeRoom = async () => {
   }
 
   try {
+    form.value.price = parseInt(form.value.price);
     await axios.post(API_ADD, form.value);
     alert("Thêm thành công");
     router.push("/admin/type-rooms/list-type-room");

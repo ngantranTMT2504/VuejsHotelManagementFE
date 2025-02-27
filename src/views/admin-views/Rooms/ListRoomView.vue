@@ -1,16 +1,23 @@
 <template>
     <main>
-        <div class="py-1 mb-3">
-            <div class="button-add mb-2">
-                <RouterLink to="/admin/rooms-management/create-room" class="btn btn-success">Add Room</RouterLink>
+        <div class="py-3 mb-3">
+            <div class=" mb-2">
+                <RouterLink to="/admin/rooms-management/create-room" class="button-primary">
+                    <i class="bi bi-plus-square me-1"></i>
+                    Add Room
+                </RouterLink>
             </div>
         </div>
         <div class="d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
-            <input type="text" class="form-control w-100" placeholder="Search room">
-            <button class="btn btn-primary me-2">Search</button>
+            <input type="text" class="form-control w-100" v-model="searchQuery" placeholder="Search by room number or type">
+            <div class="icons">
+                <a href="">
+                    <i class="bi bi-sort-down-alt fs-4 text-dark"></i>
+                </a>
+            </div>
         </div>
         <div class="list-user">
-            <table class="table table-striped">
+            <table class="table-design w-100">
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -21,7 +28,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="room in rooms">
+                    <tr v-for="room in filteredRooms">
                         <td>{{ room?.id }}</td>
                         <td>{{ room?.numberRoom }}</td>
                         <td>{{ room?.typeRoom?.name }}</td>
@@ -58,18 +65,12 @@
     </main>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-const rooms = ref({
-    id: null,
-    numberRoom: "",
-    status: null,
-    statusName: "",
-    typeRoom: null
-})
-
+const rooms = ref([]);
+const searchQuery = ref("");
 const router = useRouter();
 
 const API_GETALL = "http://localhost:5287/api/Room/GetRooms"
@@ -109,15 +110,23 @@ const roomList = async () => {
     }
 }
 
+
+const filteredRooms = computed(() => {
+    return rooms.value.filter(room => 
+        room.numberRoom.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        room.typeRoom?.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
+
 const editRoom = (id) => {
     router.push(`/admin/rooms-management/edit-room/${id}`);
 }
 
-const deleteRoom = (id) => {
+const deleteRoom = async (id) => {
     const _confirm = confirm("Bạn có chắc muốn xóa không?");
     if (_confirm) {
         try {
-            axios.delete(API_DELETE + `${id}`)
+            await axios.delete(API_DELETE + `${id}`)
             alert("Xóa thành công")
             roomList()
         } catch (error) {

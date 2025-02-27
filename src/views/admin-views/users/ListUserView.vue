@@ -1,16 +1,17 @@
 <template>
     <main>
-        <div class="py-1 mb-3">
-            <div class="button-add mb-2">
-                <RouterLink to="/admin/users/create-user" class="btn btn-success">Add User</RouterLink>
+        
+        <div class="mt-5 d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
+            <input type="text" class="form-control w-100" placeholder="Search by email or sdt">
+            <div class="icons">
+                <a href="">
+                    <i class="bi bi-sort-down-alt fs-4 text-dark"></i>
+                   
+                </a>
             </div>
         </div>
-        <div class="d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
-            <input type="text" class="form-control w-100" placeholder="Search users">
-            <button class="btn btn-primary me-2">Search</button>
-        </div>
         <div class="list-user">
-            <table class="table table-striped">
+            <table class="table-design w-100">
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -37,11 +38,9 @@
                         <td>{{ user.Role }}</td>
                         <td>{{ user.Status }}</td>
                         <td>
-                            <div class="action btn d-flex gap-4">
-                                <a href="" class="btn btn-warning text-dark px-2 py-1 rounded"><i
-                                        class="bi bi-pencil"></i></a>
-                                <a href="" class="btn btn-danger text-light px-2 py-1 rounded"><i
-                                        class="bi bi-trash"></i></a>
+                            <div class="action btn ">
+                                <a href="" class="btn btn-danger text-dark px-2 py-1 rounded">Block</a>
+                               
                             </div>
                         </td>
                     </tr>

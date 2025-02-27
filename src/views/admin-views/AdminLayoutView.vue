@@ -13,18 +13,36 @@
     </div>
     <main>
         <div class="content">
+            <div class="d-flex justify-content-end pb-3 header">
+                <div class="d-flex align-items-center">
+                    <button class="main-btn me-4">Booking</button>
+                    <a class="position-relative border-0 me-4 text-dark ">
+                        <i class="bi bi-envelope fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            2
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </a>
+                    <a type="button" class="position-relative border-0 text-dark">
+                        <i class="bi bi-bell-fill fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            2
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
             <Suspense>
-                <template #default>
+                <template #default >
                     <component :is="currentComponent" />
-                    
                 </template>
                 <template #fallback>
                     <p>Loading...</p>
                 </template>
             </Suspense>
             <!-- Copyright -->
-            <div class="container-fluid fixed-bottom copyright-section text-center text-capitalize">
-                <p class="text-white">Copyright <a href="#">©️ Kim Ngan</a> All Rights Reserved</p>
+            <div class="copyright-section text-capitalize">
+                <p>2025 <a href="#">©️ Kim Ngan</a> All Rights Reserved</p>
             </div>
         </div>
     </main>
@@ -43,21 +61,27 @@ const currentComponent = computed(()=>{
 })
 </script>
 <style>
+.header{
+    border-bottom: 1px solid gray;
+}
+
+
 .sidebar {
     height: 100vh;
-    background: #fff;
+    background: var(--primary-color);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     position: fixed;
     width: 250px;
     transition: all 0.3s;
+    
 }
 
 .sidebar .sidebar-link {
     padding: 12px 20px;
     display: block;
-    color: #333;
+    color: white;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .sidebar .sidebar-link:hover {
@@ -72,7 +96,7 @@ const currentComponent = computed(()=>{
 }
 
 .copyright-section {
-    background-color: var(--primary-color);
+    background-color: white;
     padding: 1.25rem 0 .3125rem;
 }
 

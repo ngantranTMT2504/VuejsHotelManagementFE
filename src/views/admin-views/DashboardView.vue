@@ -1,20 +1,6 @@
 <template>
     <main>
-        <div class="d-flex justify-content-between align-items-center ">
-            <input type="text" class="form-control w-50" placeholder="Search for rooms and offers">
-            <div class="d-flex align-items-center">
-                <button class="btn btn-primary me-2">Create booking</button>
-                <button type="button" class="position-relative border-0">
-                    <i class="bi bi-bell-fill"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        2
-                        <span class="visually-hidden">unread messages</span>
-                    </span>
-                </button>
-            </div>
-        </div>
-
-        <div class="container my-2">
+         <div class="container my-2">
             <h1>Booking Dashboard</h1>
 
             <!-- First Row: Total Booking, Increase Booking, Monthly, Income -->

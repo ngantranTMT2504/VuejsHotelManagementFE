@@ -1,115 +1,165 @@
 <template>
-        <main>
-            <div class="py-1 mb-3">
-                <div class="button-add mb-2">
-                    <RouterLink to="/admin/type-rooms/create-type-room" class="btn btn-success">Add Type Room</RouterLink>
-                </div>
+    <main>
+        <div class="py-3 mb-3">
+            <div class="mb-2">
+                <RouterLink to="/admin/type-rooms/create-type-room" class="button-primary">
+                    <i class="bi bi-plus-square me-1"></i>
+                    Add Type Room
+                </RouterLink>
             </div>
-            <div class="d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
-                <input type="text" class="form-control w-100" placeholder="Search tyle room">
-                <button class="btn btn-primary me-2">Search</button>
+        </div>
+
+        <!-- Thanh tìm kiếm -->
+        <div class="d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
+            <input type="text" class="form-control w-100" v-model="searchQuery" placeholder="Search by name">
+            <div class="icons">
+                <a href="">
+                    <i class="bi bi-sort-down-alt fs-4 text-dark"></i>
+                   
+                </a>
             </div>
-            <div class="list-user">
-                <table class="table table-striped">
-                    <thead class="table-primary">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Type Name</th>
-                            <th scope="col">Price per night</th>
-                            <th scope="col">Capacity</th>
-                            <th scope="col">description</th>
-                            <th scope="col">image</th>
-                            <th scope="col" class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="type in typeRooms ">
-                            <td>{{ type?.id }}</td>
-                            <td>{{ type?.name }}</td>
-                            <td>{{ type?.price }}</td>
-                            <td>{{ type?.capacity }}</td>
-                            <td>{{ type?.description }}</td>
-                            <td>
-                                <img :src="type?.imageRoom" alt="" width="100px" height="100px">
-                            </td>
-                            <td>
-                                <div class="action btn d-flex gap-4">
-                                    <a href="" @click="editTypeRoom(type.id)" class="btn btn-warning text-dark px-2 py-1 rounded"><i
-                                            class="bi bi-pencil"></i></a>
-                                    <a href="" @click="deleteTypeRoom(type.id)" class="btn btn-danger text-light px-2 py-1 rounded"><i
-                                            class="bi bi-trash"></i></a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <nav aria-label="Page navigation example" class="d-flex justify-content-center">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a  class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </main>
+        </div>
+
+        <!-- Bảng danh sách loại phòng -->
+        <div class="list-user mb-5">
+            <table class="table-design w-100">
+                <thead >
+                    <tr style="height: 50px">
+                        <th scope="col" style="width: 35px">ID</th>
+                        <th scope="col" style="width: 150px">Type Name</th>
+                        <th scope="col" style="width: 150px">Price per night</th>
+                        <th scope="col">Capacity</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Image</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="type in filteredTypeRooms" :key="type.id">
+                        <td>{{ type?.id }}</td>
+                        <td>{{ type?.name }}</td>
+                        <td>{{ type?.price }}</td>
+                        <td>{{ type?.capacity }}</td>
+                        <td>{{ type?.description }}</td>
+                        <td>
+                            <img :src="type?.imageRoom" alt="Room Image" width="100" height="80">
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex gap-2">
+                                <button @click="editTypeRoom(type.id)" class="btn btn-warning text-dark px-2 py-1 rounded">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button @click="deleteTypeRoom(type.id)" class="btn btn-danger text-light px-2 py-1 rounded">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Phân trang -->
+            <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <button class="page-link">&laquo;</button>
+                    </li>
+                    <li class="page-item"><button class="page-link">1</button></li>
+                    <li class="page-item"><button class="page-link">2</button></li>
+                    <li class="page-item"><button class="page-link">3</button></li>
+                    <li class="page-item">
+                        <button class="page-link">&raquo;</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
 </template>
+
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-const typeRooms = ref({
-    id: null,
-    name: "",
-    price: null,
-    capacity: null,
-    description: "",
-    imageRoom: ""
-})
-
+const typeRooms = ref([]);
+const searchQuery = ref("");
 const router = useRouter();
 
-const API_GETALL = "http://localhost:5287/api/TypeRoom/GetTypeRooms"
-const API_DELETE = "http://localhost:5287/api/TypeRoom/DeleteTypeRoom/"
+const API_GETALL = "http://localhost:5287/api/TypeRoom/GetTypeRooms";
+const API_DELETE = "http://localhost:5287/api/TypeRoom/DeleteTypeRoom/";
 
 const typeRoomList = async () => {
     try {
         const response = await axios.get(API_GETALL);
-        typeRooms.value = response.data
+        typeRooms.value = response.data.reverse();
     } catch (error) {
-        console.log("Lỗi!" + error);
+        console.error("Lỗi!", error);
     }
-}
+};
+
+const filteredTypeRooms = computed(() => {
+    return typeRooms.value.filter(room =>
+        room.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
 
 const editTypeRoom = (id) => {
     router.push(`/admin/type-rooms/edit-type-room/${id}`);
-}
+};
 
-const deleteTypeRoom = (id) => {
+const deleteTypeRoom = async (id) => {
     const _confirm = confirm("Bạn có chắc muốn xóa không?");
-    if(_confirm) {
+    if (_confirm) {
         try {
-            axios.delete(API_DELETE + `${id}`)
-            alert("Xóa thành công")
-            typeRoomList()
+            await axios.delete(API_DELETE + id);
+            alert("Xóa thành công");
+            await typeRoomList();
         } catch (error) {
-            console.log("Lỗi!" + error);
+            console.error("Lỗi!", error);
         }
     }
+};
+
+onMounted(typeRoomList);
+</script>
+
+<style>
+.table-design tbody tr:hover {background-color: #ddd;}
+.table-design thead{
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    
+}
+.table-design thead th, .table-design td {
+    padding: 8px;
+    
 }
 
-onMounted(typeRoomList)
+.button-primary {
+    display: inline-block;
+    border-radius: 15px;
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
 
-</script>
-<style>
+.button-primary:hover {
+    background-color:white ;
+    color: var(--primary-color);
+}
+
+.pagination .page-item button {
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: var(--primary-color)
+}
+
+.pagination .page-item button:hover {
+    background: #ddd;
+    border-radius: 5px;
+}
 </style>

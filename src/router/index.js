@@ -28,6 +28,7 @@ import EditServiceView from "@/views/admin-views/services/EditServiceView.vue";
 import ListRoomView from "@/views/admin-views/Rooms/ListRoomView.vue";
 import EditRoomView from "@/views/admin-views/Rooms/EditRoomView.vue";
 import CreateRoomView from "@/views/admin-views/Rooms/CreateRoomView.vue";
+import NotFoundView from "@/views/NotFoundView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +38,12 @@ const router = createRouter({
       name: "home",
       component: HomeView,
     },
+    { 
+      path: "/:pathMatch(.*)*", 
+      name: "NotFound", 
+      component: NotFoundView, 
+      meta: { hideLayout: true }
+    }, // Trang 404
     {
       path: "/login",
       name: "login",
@@ -64,7 +71,7 @@ const router = createRouter({
       name: "service",
       component: ServiceView,
     },
-    
+
     {
       path: "/gallery",
       name: "gallery",
@@ -116,7 +123,7 @@ const router = createRouter({
             },
           ],
         },
-        { 
+        {
           path: "type-rooms",
           component: TypeRoomView,
           redirect: "/admin/type-rooms/list-type-room",
@@ -137,11 +144,11 @@ const router = createRouter({
               component: EditTypeRoomView,
               props: true, // Kích hoạt props để nhận id từ URL
             },
-          ]
+          ],
         },
-        { 
+        {
           path: "services-management",
-          component: ServiceManageView ,
+          component: ServiceManageView,
           redirect: "/admin/services-management/list-service",
           children: [
             {
@@ -160,9 +167,9 @@ const router = createRouter({
               component: EditServiceView,
               props: true, // Kích hoạt props để nhận id từ URL
             },
-          ]
+          ],
         },
-        { 
+        {
           path: "rooms-management",
           component: RoomManageView,
           redirect: "/admin/rooms-management/list-room",
@@ -183,7 +190,7 @@ const router = createRouter({
               component: EditRoomView,
               props: true, // Kích hoạt props để nhận id từ URL
             },
-          ]
+          ],
         },
         { path: "approved-booking", component: ApprovedBookingView },
       ],

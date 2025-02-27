@@ -1,34 +1,42 @@
 <template>
     <main>
-        <div class="py-1 mb-3">
+        <div class="py-3 mb-3">
             <div class="button-add mb-2">
-                <RouterLink to="/admin/services-management/create-service" class="btn btn-success">Add Service </RouterLink>
+                <RouterLink to="/admin/services-management/create-service" class="button-primary">
+                    <i class="bi bi-plus-square me-1"></i>
+                    Add Service 
+                </RouterLink>
             </div>
         </div>
         <div class="d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
-            <input type="text" class="form-control w-100" placeholder="Search service">
-            <button class="btn btn-primary me-2">Search</button>
+            <input type="text" class="form-control w-100" v-model="searchQuery" placeholder="Search by name">
+            <div class="icons">
+                <a href="">
+                    <i class="bi bi-sort-down-alt fs-4 text-dark"></i>
+                   
+                </a>
+            </div>
         </div>
         <div class="list-user">
-            <table class="table table-bordered table-striped">
-                <thead class="table-primary">
+            <table class="table-design w-100">
+                <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Price</th>
+                        <th scope="col" style="width: 150px">Name</th>
+                        <th scope="col" style="width: 150px">Price</th>
                         <th scope="col">Description</th>
                         <th scope="col">Image</th>
                         <th scope="col" class="">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="service in services">
+                    <tr v-for="service in filteredServices">
                         <td>{{ service?.id }}</td>
                         <td>{{ service?.name }}</td>
                         <td>{{ service?.price }}</td>
                         <td>{{ service?.description }}</td>
                         <td>
-                            <img :src="service?.imageService" alt="" width="100px" height="100px">
+                            <img :src="service?.imageService" alt="" width="100px" height="80px">
                         </td>
                         <td>
                             <div class="action btn d-flex gap-4">
@@ -62,25 +70,14 @@
     </main>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted , computed} from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-// const services = ref([
-//     { ID: 1, name: 'spa', price: '125,000', description: 'Chăm sóc sức khỏe' },
-//     { ID: 2, name: 'spa', price: '125,000', description: 'Chăm sóc sức khỏe' },
-//     { ID: 3, name: 'spa', price: '125,000', description: 'Chăm sóc sức khỏe' },
-// ])
-
-const services= ref({
-    id: null,
-    name: "",
-    price: null,
-    imageService: "",
-    description: ""
-})
-
+const services= ref([])
+const searchQuery = ref("");
 const router = useRouter();
+
 const API_GETALL = "http://localhost:5287/api/Service/GetServices"
 const API_DELETE = "http://localhost:5287/api/Service/DeleteService/"
 
@@ -92,6 +89,12 @@ const serviceList = async () => {
         console.log("Lỗi!" + error);
     }
 }
+
+const filteredServices = computed(() => {
+    return services.value.filter(service =>
+        service.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
 
 const editService = (id) => {
     router.push(`/admin/services-management/edit-service/${id}`);
@@ -107,7 +110,6 @@ const deleteTypeRoom = (id) => {
         } catch (error) {
             console.log("Lỗi!" + error);
         }
-
     }
 }
 
