@@ -29,6 +29,7 @@ import ListRoomView from "@/views/admin-views/Rooms/ListRoomView.vue";
 import EditRoomView from "@/views/admin-views/Rooms/EditRoomView.vue";
 import CreateRoomView from "@/views/admin-views/Rooms/CreateRoomView.vue";
 import NotFoundView from "@/views/NotFoundView.vue"
+import PaymentView from "@/views/client-views/PaymentView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,6 +92,11 @@ const router = createRouter({
       path: "/booking",
       name: "booking",
       component: BookingView,
+    },
+    {
+      path: "/payment",
+      name: "payment",
+      component: PaymentView,
     },
     {
       path: "/admin",

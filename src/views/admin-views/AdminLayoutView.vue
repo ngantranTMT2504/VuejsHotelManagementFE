@@ -15,7 +15,7 @@
         <div class="content">
             <div class="d-flex justify-content-end pb-3 header">
                 <div class="d-flex align-items-center">
-                    <button class="main-btn me-4">Booking</button>
+                    <RouterLink to="/booking" class="main-btn me-4">Booking</RouterLink>
                     <a class="position-relative border-0 me-4 text-dark ">
                         <i class="bi bi-envelope fs-5"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">

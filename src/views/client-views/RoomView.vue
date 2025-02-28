@@ -81,10 +81,10 @@
     </main>
 </template>
 <script setup>
+import RoomBanner from '@/assets/images/room/room-banner.jpg'
 import axios from 'axios';
 import { RouterLink } from 'vue-router'
 import { ref, onMounted} from 'vue'
-import RoomBanner from '@/assets/images/room/room-banner.jpg'
 
 
 const typeRooms = ref([]);

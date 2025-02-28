@@ -2,43 +2,34 @@
   <div class="container mt-4 my-5">
     <h2 class="mb-3">Create Service</h2>
     <form class="container w-75 my-5" @submit.prevent="createService">
-
-      <!-- Tên dịch vụ -->
       <div class="mb-3">
         <label for="serviceName" class="form-label fw-semibold">Tên dịch vụ:</label>
         <input type="text" v-model="name" id="serviceName" class="form-control" @input="validateField('name')" />
         <span class="text-danger" v-if="errors.name">{{ errors.name }}</span>
       </div>
-
-      <!-- Giá dịch vụ -->
       <div class="mb-3">
         <label for="servicePrice" class="form-label fw-semibold">Giá:</label>
         <input type="text" v-model="price" id="servicePrice" class="form-control" @input="validateField('price')" />
         <span class="text-danger" v-if="errors.price">{{ errors.price }}</span>
       </div>
-
-      <!-- Mô tả -->
       <div class="mb-3">
         <label for="serviceDescription" class="form-label fw-semibold">Mô tả:</label>
         <textarea id="serviceDescription" v-model="description" class="form-control"
           @input="validateField('description')"></textarea>
         <span class="text-danger" v-if="errors.description">{{ errors.description }}</span>
       </div>
-
-      <!-- Hình ảnh -->
       <div class="mb-3">
         <label for="serviceImage" class="form-label fw-semibold">Hình ảnh:</label>
         <input type="file" id="serviceImage" @change="handleFileUpload" class="form-control" accept="image/*" />
+        <span class="text-danger" v-if="errors.image">{{ errors.image }}</span>
       </div>
       <div v-if="imageUrl">
         <p>Ảnh đã upload:</p>
         <img :src="imageUrl" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
       </div>
-
-      <!-- Buttons -->
       <div class="d-flex gap-3 justify-content-end">
         <button type="submit" class="btn btn-primary">Create</button>
-        <button type="reset" class="btn btn-success" @click="clearForm">Clear</button>
+        <RouterLink to="/admin/services-management/list-service" type="reset" class="btn btn-success" >Back</RouterLink>
       </div>
 
     </form>
@@ -46,26 +37,22 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import axios from "axios";
+import { ref } from "vue";
+import { useRouter, RouterLink } from "vue-router";
 
-// Các biến lưu giá trị input
-const name = ref('');
-const price = ref('');
-const description = ref('');
-const imageUrl = ref('');
-
-// Biến lưu lỗi
+const name = ref("");
+const price = ref("");
+const description = ref("");
+const imageUrl = ref("");
 const errors = ref({});
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload";
 const UPLOAD_PRESET = "hotel_preset";
-
 const API_ADD = "http://localhost:5287/api/Service/AddService";
+
 const router = useRouter();
 
-// Xử lý upload ảnh
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -76,15 +63,15 @@ const handleFileUpload = async (event) => {
 
   try {
     const response = await axios.post(CLOUDINARY_URL, formData);
-    imageUrl.value = response.data.secure_url; // Lấy link ảnh từ Cloudinary
-    alert("Upload thành công!");
+    imageUrl.value = response.data.secure_url;
+    delete errors.value.image;
+    Swal.fire("Thành công!", "Upload ảnh thành công.", "success");
   } catch (error) {
     console.error("Lỗi upload ảnh:", error);
-    alert("Upload ảnh thất bại!");
+    Swal.fire("Lỗi!", "Upload ảnh thất bại.", "error");
   }
 };
 
-// Validate từng field khi nhập
 const validateField = (field) => {
   errors.value[field] = "";
 
@@ -94,62 +81,51 @@ const validateField = (field) => {
   if (field === "price") {
     if (!price.value.trim()) {
       errors.value.price = "Giá không được để trống";
-    } else if (isNaN(price.value)) {
-      errors.value.price = "Giá phải là số";
+    } else if (isNaN(price.value) || Number(price.value) <= 0) {
+      errors.value.price = "Giá phải là số dương";
     }
   }
   if (field === "description" && !description.value.trim()) {
     errors.value.description = "Mô tả không được để trống";
   }
+  if (field === "image" && !imageUrl.value) {
+    errors.value.image = "Hình ảnh không được để trống";
+  }
 };
 
-// Validate toàn bộ form trước khi submit
 const validateForm = () => {
-  errors.value = {};
+  validateField("name");
+  validateField("price");
+  validateField("description");
+  validateField("image");
 
-  if (!name.value.trim()) {
-    errors.value.name = "Tên dịch vụ không được để trống";
-  }
-  if (!price.value.trim()) {
-    errors.value.price = "Giá không được để trống";
-  } else if (isNaN(price.value)) {
-    errors.value.price = "Giá phải là số";
-  }
-  if (!description.value.trim()) {
-    errors.value.description = "Mô tả không được để trống";
-  }
-
-  return Object.keys(errors.value).length === 0;
+  return Object.keys(errors.value).length === 0; 
 };
 
-// Xử lý submit form
 const createService = async () => {
-  if (!validateForm()) return; // Nếu có lỗi thì không submit
+  if (!validateForm()) {
+    Swal.fire("Lỗi!", "Vui lòng nhập đầy đủ thông tin.", "error");
+    return;
+  }
 
   const service = {
     name: name.value,
-    price: parseFloat(price.value), // Chuyển giá về số
+    price: parseInt(price.value),
     description: description.value,
     ImageService: imageUrl.value,
   };
 
   try {
     await axios.post(API_ADD, service);
-    alert("Thêm thành công");
+    Swal.fire("Thành công!", "Dịch vụ đã được thêm.", "success");
     router.push("/admin/services-management/list-service");
   } catch (error) {
-    console.log("Lỗi khi thêm dịch vụ:", error);
+    console.error("Lỗi khi thêm dịch vụ:", error);
+    Swal.fire("Lỗi!", "Không thể thêm dịch vụ.", "error");
   }
 };
 
-// Xóa dữ liệu form
-const clearForm = () => {
-  name.value = "";
-  price.value = "";
-  description.value = "";
-  imageUrl.value = "";
-  errors.value = {};
-};
+
 </script>
 
 <style></style>

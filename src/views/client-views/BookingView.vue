@@ -12,7 +12,7 @@
         </div>
         <div class="container booking-wrapper py-5">
             <div class="row">
-                <div class="col-lg-8 ">
+                <div class="col-lg-6 ">
                     <div class="introduct me-4">
                         <h4 class="fw-semibold">Interesting Experience</h4>
                         <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Alias voluptatibus ut enim. Ad
@@ -234,102 +234,91 @@
                         <p>-Check-in time is 12 PM - 2 PM and check-out by 11 AM.</p>
                     </div>
                 </div>
-                <div class="col-lg-4 text-white">
+                <div class="col-lg-6 text-white">
                     <div class="form-wrapper py-5 rounded-4 ">
                         <h3 class="mb-4 text-center">Your Reservation</h3>
                         <form class="px-5">
                             <div class="mb-3">
                                 <label for="check-in" class="form-label fw-semibold">Check-in</label>
-                                <input type="date" class="form-control" id="check-in" required>
+                                <input type="date" class="form-control" v-model="checkInDate" required />
                             </div>
                             <div class="mb-3">
                                 <label for="check-out" class="form-label fw-semibold">Check-out</label>
-                                <input type="date" class="form-control" id="check-out" required>
+                                <input type="date" class="form-control" v-model="checkOutDate" required />
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Room</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option value="1" selected>1</option>
-                                    <option value="2">2</option>
-                                    <option value="3"> 3 </option>
+                                <select v-model.number="roomCount" class="form-select">
+                                    <option :value="1">1</option>
+                                    <option :value="2">2</option>
+                                    <option :value="3">3</option>
                                 </select>
                             </div>
+
                             <div class="row mb-3">
                                 <label class="form-label fw-semibold">Peoples</label>
                                 <div class="col-lg mb-6 mb-lg-0">
-                                    <select class="form-select">
-                                        <option selected>Adults</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
+                                    <select class="form-select" v-model.number="selectedAdults">
+                                        <option disabled>Adults</option>
+                                        <option :value="1">1</option>
+                                        <option :value="2">2</option>
+                                        <option :value="3">3</option>
+                                        <option :value="4">4</option>
+                                        <option :value="5">5</option>
+                                        <option :value="6">6</option>
                                     </select>
                                 </div>
                                 <div class="col-lg mb-6 mb-lg-0">
-                                    <select class="form-select">
-                                        <option selected>Children</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
+                                    <select class="form-select" v-model.number="selectedChildren">
+                                        <option disabled>Children</option>
+                                        <option :value="0">0</option>
+                                        <option :value="1">1</option>
+                                        <option :value="2">2</option>
+                                        <option :value="3">3</option>
+                                        <option :value="4">4</option>
+                                        <option :value="5">5</option>
+                                        <option :value="6">6</option>
                                     </select>
                                 </div>
                             </div>
+
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Type room</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option value="Standard Room" selected>Standard Room</option>
-                                    <option value="Superior Room">Superior Room </option>
-                                    <option value="Deluxe Room"> Deluxe Room </option>
-                                    <option value="Suite Room"> Suite Room </option>
-                                    <option value="Executive Suite"> Executive Suite </option>
+                                <select class="form-select" v-model="selectedRoomType">
+                                    <option v-for="type in typeRooms" :key="type.id" :value="type.id">
+                                        {{ type.name }} - {{ formatPrice(type.price) }}
+                                    </option>
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Extra Services</label>
+
+                            <label class="form-label fw-semibold">Extra Services</label>
+                            <div v-for="service in services" :key="service.id" class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input custom-check" type="checkbox" value=""
-                                        id="SpaService">
-                                    <label class="form-check-label" for="SpaService">
-                                        Spa, beauty & Health
+                                    <input class="form-check-input custom-check" type="checkbox"
+                                        v-model="selectedServices" :value="service.id" :id="'service-' + service.id" />
+                                    <label class="form-check-label" :for="'service-' + service.id">
+                                        {{ service.name }}
                                     </label>
-                                    <span class="price">$20</span>
-                                </div>
-                                <div class="form-check ">
-                                    <input class="form-check-input custom-check" type="checkbox" value=""
-                                        id="RestaurentService">
-                                    <label class="form-check-label" for="RestaurentService">
-                                        Restaurent
-                                    </label>
-                                    <span class="price">$20</span>
-                                </div>
-                                <div class="form-check ">
-                                    <input class="form-check-input custom-check" type="checkbox" value=""
-                                        id="SwimmingPoolService">
-                                    <label class="form-check-label" for="SwimmingPoolService">
-                                        Swimming Pool
-                                    </label>
-                                    <span class="price">$20</span>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input custom-check" type="checkbox" value=""
-                                        id="ConferenceService">
-                                    <label class="form-check-label" for="ConferenceService">
-                                        Conference Hall
-                                    </label>
-                                    <span class="price ">$20</span>
+                                    <span class="price">({{ formatPrice(service.price) }})</span>
                                 </div>
                             </div>
+
                             <div class="mb-3">
-                                <p class="fw-semibold text-white">You price</p>
-                                <p class="text-white">Total : $70</p>
+                                <p class="fw-semibold text-white">Your price:</p>
+                                <p class="text-white">{{ formatPrice(totalPrice) }}</p>
                             </div>
-                            <button type="submit" class="btn-payment w-100">Pay for your Booking</button>
+                            <div class="d-flex justify-content-center">
+                                <RouterLink :to="{
+                                    path: '/payment',
+                                    query: { price: parsePrice(totalPrice) }
+                                }" class="btn-payment w-100 text-center">
+                                    Pay for your Booking
+                                </RouterLink>
+
+                            </div>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -341,6 +330,61 @@
 <script setup>
 import BannerBooking1 from '@/assets/images/Booking/room-single-img-09.jpg'
 import BannerBooking2 from '@/assets/images/Booking/room-single-img-11.jpg'
+import axios from 'axios';
+import { RouterLink , useRoute, useRouter} from 'vue-router'
+import { ref, onMounted, computed } from 'vue'
+
+const route = useRoute();
+const router = useRouter();
+const API_GET_SERVICE = "http://localhost:5287/api/Service/GetServices"
+const API_GET_TYPE_ROOM = "http://localhost:5287/api/TypeRoom/GetTypeRooms";
+
+const services = ref([])
+const typeRooms = ref([]);
+
+
+const formatPrice = (value) => {
+    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+const parsePrice = (formattedPrice) => {
+    if (typeof formattedPrice !== "string") {
+        formattedPrice = formattedPrice.toString(); 
+    }
+    return parseInt(formattedPrice.replace(/[^\d]/g, ""), 10);
+};
+
+const List = async () => {
+    try {
+        const responseService = await axios.get(API_GET_SERVICE);
+        const responseTypeRoom = await axios.get(API_GET_TYPE_ROOM);
+        services.value = responseService.data
+        typeRooms.value = responseTypeRoom.data.reverse();
+    } catch (error) {
+        console.error("Lỗi!", error);
+    }
+};
+
+const selectedServices = ref([]);
+const selectedRoomType = ref(null);
+const roomCount = ref(1);
+
+const totalPrice = computed(() => {
+    let serviceTotal = selectedServices.value.reduce((sum, serviceId) => {
+        const service = services.value.find(s => s.id === serviceId);
+        return sum + (service ? service.price : 0);
+    }, 0);
+
+    let roomPrice = 0;
+    if (selectedRoomType.value) {
+        const room = typeRooms.value.find(r => r.id === selectedRoomType.value);
+        roomPrice = room ? room.price : 0;
+    }
+
+    return (serviceTotal + roomPrice) * roomCount.value;
+})
+
+onMounted(List);
+
 </script>
 
 <style>
@@ -351,7 +395,7 @@ import BannerBooking2 from '@/assets/images/Booking/room-single-img-11.jpg'
     fill: none;
 }
 
-.btn-payment{
+.btn-payment {
     background-color: var(--secondary-color);
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
@@ -361,12 +405,13 @@ import BannerBooking2 from '@/assets/images/Booking/room-single-img-11.jpg'
     transition: 0.3s ease-in-out;
 }
 
-.btn-payment:hover{
+.btn-payment:hover {
     background-color: var(--primary-color);
     color: var(--secondary-color);
     border: 2px solid var(--secondary-color);
-   
+
 }
+
 /* Form Booking*/
 .form-wrapper {
     background-color: var(--primary-color);

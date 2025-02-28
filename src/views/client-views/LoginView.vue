@@ -9,7 +9,7 @@
                         </div>
                         <div class="col-md-6 form-section">
                             <div class="icon-close">
-                                <a href="/" class="text-secondary fs-4">
+                                <a href="/" class="icon-home fs-4">
                                     <i class="bi bi-house-door-fill"></i>
                                 </a>
                             </div>
@@ -24,7 +24,7 @@
                                     <input type="password" class="form-control" id="password"
                                         placeholder="Enter your password">
                                 </div>
-                                <button type="submit" class="main-btn w-100">Login</button>
+                                <button type="submit" class="button-primary w-100">Login</button>
 
                                 <div class="text-center mt-3">or</div>
 
@@ -52,7 +52,7 @@
 </script>
 <style>
 .main {
-    background: url('@/assets/images/slider/slider1.webp') no-repeat center center fixed;
+    background: url('@/assets/images/slider/slider1.jpg') no-repeat center center fixed;
     background-size: cover;
     width: 100vw;
     height: 100vh;

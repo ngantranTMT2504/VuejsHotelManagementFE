@@ -35,9 +35,9 @@
                         <td>{{ room?.statusName }}</td>
                         <td>
                             <div class="action btn d-flex gap-4">
-                                <a href="" @click="editRoom(room.id)"
+                                <a @click="editRoom(room.id)"
                                     class="btn btn-warning text-dark px-2 py-1 rounded"><i class="bi bi-pencil"></i></a>
-                                <a href="" @click="deleteRoom(room.id)"
+                                <a @click="deleteRoom(room.id)"
                                     class="btn btn-danger text-light px-2 py-1 rounded"><i class="bi bi-trash"></i></a>
                             </div>
                         </td>
@@ -81,7 +81,7 @@ const roomList = async () => {
         const response = await axios.get(API_GETALL);
         console.log(response.data);
 
-        rooms.value = response.data;
+        rooms.value = response.data.reverse();
 
         if (rooms.value[0] !== null) {
             rooms.value.forEach(element => {
@@ -122,19 +122,30 @@ const editRoom = (id) => {
     router.push(`/admin/rooms-management/edit-room/${id}`);
 }
 
-const deleteRoom = async (id) => {
-    const _confirm = confirm("Bạn có chắc muốn xóa không?");
-    if (_confirm) {
-        try {
-            await axios.delete(API_DELETE + `${id}`)
-            alert("Xóa thành công")
-            roomList()
-        } catch (error) {
-            console.log(error);
-        }
-    }
-}
 
+const deleteRoom = async (id) => {
+  Swal.fire({
+    title: "Bạn có chắc muốn xóa?",
+    text: "Hành động này không thể hoàn tác!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy"
+  }).then( async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(API_DELETE + `${id}`);
+        Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
+        await roomList(); 
+      } catch (error) {
+        console.error("Lỗi!", error);
+        Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
+      }
+    }
+  });
+};
 onMounted(roomList)
 
 </script>

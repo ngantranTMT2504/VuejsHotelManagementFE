@@ -35,7 +35,7 @@
       </div>
       <div class="d-flex gap-3 justify-content-end">
         <button type="submit" class="btn btn-primary">Create</button>
-        <button type="button" class="btn btn-success" @click="resetForm">Clear</button>
+        <RouterLink to="/admin/type-rooms/list-type-room"    type="button" class="btn btn-success" >Back</RouterLink>
       </div>
     </form>
   </div>
@@ -44,7 +44,7 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter , RouterLink} from 'vue-router';
 import validator from 'validator';
 
 const form = ref({
@@ -55,10 +55,9 @@ const form = ref({
   imageRoom: ""
 });
 
+const errors = ref({});
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload";
 const UPLOAD_PRESET = "hotel_preset";
-
-const errors = ref({});
 const API_ADD = "http://localhost:5287/api/TypeRoom/AddTypeRoom";
 const router = useRouter();
 
@@ -73,10 +72,20 @@ const handleFileUpload = async (event) => {
   try {
     const response = await axios.post(CLOUDINARY_URL, formData);
     form.value.imageRoom = response.data.secure_url;
-    alert("Upload thành công!");
+    Swal.fire({
+        title: "Thành công!",
+        text: "Upload ảnh thành công.",
+        icon: "success",
+        confirmButtonText: "OK"
+      });
   } catch (error) {
     console.error("Lỗi upload ảnh:", error);
-    alert("Upload ảnh thất bại!");
+    Swal.fire({
+      title: "Lỗi!",
+      text: "Upload ảnh thất bại.",
+      icon: "error",
+      confirmButtonText: "Thử lại"
+    });
   }
 };
 
@@ -91,16 +100,23 @@ const validateField = (field) => {
     } else {
       delete errors.value.price;
     }
-  } else if (field === "capacity" && validator.isEmpty(String(form.value.capacity).trim())) {
-    errors.value.capacity = "Sức chứa không được để trống";
+  } else if (field === "capacity") {
+    if (validator.isEmpty(String(form.value.capacity).trim())) {
+      errors.value.capacity = "Sức chứa không được để trống";
+    } else if (!validator.isInt(String(form.value.capacity), { min: 1 })) {
+      errors.value.capacity = "Sức chứa phải là số nguyên dương";
+    } else {
+      delete errors.value.capacity;
+    }
   } else if (field === "description" && validator.isEmpty(form.value.description.trim())) {
     errors.value.description = "Mô tả không được để trống";
   } else if (field === "image" && validator.isEmpty(form.value.imageRoom.trim())) {
-    errors.value.name = "Hình ảnh không được để trống";
+    errors.value.image = "Hình ảnh không được để trống";
   } else {
     delete errors.value[field];
   }
 };
+
 
 const validateForm = () => {
   validateField("name");
@@ -115,28 +131,17 @@ const createTypeRoom = async () => {
   if (Object.keys(errors.value).length > 0) {
     return;
   }
-
   try {
     form.value.price = parseInt(form.value.price);
     await axios.post(API_ADD, form.value);
-    alert("Thêm thành công");
+    Swal.fire("Đã thêm!", "Dữ liệu đã được thêm thành công.", "success");
     router.push("/admin/type-rooms/list-type-room");
   } catch (error) {
     console.error("Lỗi:", error);
-    alert("Thêm thất bại");
+    Swal.fire("Lỗi!", "Có lỗi xảy ra khi thêm.", "error");
   }
 };
 
-const resetForm = () => {
-  form.value = {
-    name: "",
-    price: "",
-    capacity: "",
-    description: "",
-    imageRoom: ""
-  };
-  errors.value = {};
-};
 </script>
 
 <style></style>

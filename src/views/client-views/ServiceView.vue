@@ -117,7 +117,7 @@
                                 <p class="fw-semibold text-white">You price</p>
                                 <p class="text-white">Total : $70</p>
                             </div>
-                            <button type="submit" class="btn-payment w-100">Pay for your Booking</button>
+                            <RouterLink to="/booking" type="submit" class="btn-payment w-100">Booking</RouterLink>
                         </form>
                     </div>
                 </div>
@@ -133,6 +133,8 @@ import { ref, onMounted} from 'vue'
 
 const API_GETALL = "http://localhost:5287/api/Service/GetServices"
 const services= ref([])
+
+
 
 const serviceList = async () => {
     try {

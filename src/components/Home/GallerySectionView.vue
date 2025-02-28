@@ -59,7 +59,7 @@ import gallery6 from '@/assets/images/gallery/6.webp'
 
 </script>
 <style>
-/* Gallery Section */
+
 .gallery_wrapper .gallery-item {
     box-shadow: 0 0 .1875rem rgba(0, 0, 0, 0.3);
     overflow: hidden;

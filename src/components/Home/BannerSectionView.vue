@@ -1,5 +1,5 @@
 <script setup>
-import slide1 from '@/assets/images/slider/slider1.webp'
+import slide1 from '@/assets/images/slider/slider1.jpg'
 import slide2 from '@/assets/images/slider/slider2.webp'
 
 
@@ -36,7 +36,7 @@ import slide2 from '@/assets/images/slider/slider2.webp'
     <span class="visually-hidden">Next</span>
   </button>
 </div>
-    <div class="container booking-area">
+    <div class="container booking-area rounded-3">
       <form class="row">
         <div class="col-lg mb-3 mb-lg-0">
           <input type="date" class="form-control" id="" placeholder="Date">
@@ -67,7 +67,7 @@ import slide2 from '@/assets/images/slider/slider2.webp'
           </select>
         </div>
         <div class="col-lg mb-3 mb-lg-0">
-          <a href="/booking" class="main-btn rounded-2 px-lg-3">Booking Now</a>
+          <a href="/booking" class="main-btn px-lg-3">Booking Now</a>
         </div>
       </form>
     </div>

@@ -13,9 +13,8 @@
         <div class="d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
             <input type="text" class="form-control w-100" v-model="searchQuery" placeholder="Search by name">
             <div class="icons">
-                <a href="">
+                <a href="#">
                     <i class="bi bi-sort-down-alt fs-4 text-dark"></i>
-                   
                 </a>
             </div>
         </div>
@@ -38,7 +37,7 @@
                     <tr v-for="type in filteredTypeRooms" :key="type.id">
                         <td>{{ type?.id }}</td>
                         <td>{{ type?.name }}</td>
-                        <td>{{ type?.price }}</td>
+                        <td>{{ formatPrice(type?.price) }}</td>
                         <td>{{ type?.capacity }}</td>
                         <td>{{ type?.description }}</td>
                         <td>
@@ -97,6 +96,10 @@ const typeRoomList = async () => {
     }
 };
 
+const formatPrice = (value) => {
+    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
 const filteredTypeRooms = computed(() => {
     return typeRooms.value.filter(room =>
         room.name.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -108,17 +111,30 @@ const editTypeRoom = (id) => {
 };
 
 const deleteTypeRoom = async (id) => {
-    const _confirm = confirm("Bạn có chắc muốn xóa không?");
-    if (_confirm) {
-        try {
-            await axios.delete(API_DELETE + id);
-            alert("Xóa thành công");
-            await typeRoomList();
-        } catch (error) {
-            console.error("Lỗi!", error);
-        }
+  Swal.fire({
+    title: "Bạn có chắc muốn xóa?",
+    text: "Hành động này không thể hoàn tác!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy"
+  }).then( async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(API_DELETE + `${id}`);
+        Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
+        await typeRoomList(); 
+      } catch (error) {
+        console.error("Lỗi!", error);
+        Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
+      }
     }
+  });
 };
+
+
 
 onMounted(typeRoomList);
 </script>
@@ -137,12 +153,14 @@ onMounted(typeRoomList);
 
 .button-primary {
     display: inline-block;
-    border-radius: 15px;
+    border-radius: 25px;
     background-color: var(--primary-color);
     border: 1px solid var(--primary-color);
     padding: 10px;
-    color: white;
+    font-weight: 600;
+    color: var(--secondary-color);
     text-decoration: none;
+    transition: 0.3s ease-in;
 }
 
 .button-primary:hover {

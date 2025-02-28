@@ -72,6 +72,10 @@ const fetchTypeRoom = async () => {
   }
 };
 
+
+
+
+
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -84,11 +88,21 @@ const handleFileUpload = async (event) => {
     const response = await axios.post(CLOUDINARY_URL, formData);
     if (response.data.secure_url) {
       typeRoom.value.imageRoom = response.data.secure_url;
-      alert("Upload thành công!");
+      Swal.fire({
+        title: "Thành công!",
+        text: "Upload ảnh thành công.",
+        icon: "success",
+        confirmButtonText: "OK"
+      });
     }
   } catch (error) {
     console.error("Lỗi upload ảnh:", error);
-    alert("Upload ảnh thất bại!");
+    Swal.fire({
+      title: "Lỗi!",
+      text: "Upload ảnh thất bại.",
+      icon: "error",
+      confirmButtonText: "Thử lại"
+    });
   }
 };
 
@@ -151,17 +165,33 @@ const validateField = (field) => {
 const editTypeRoom = async () => {
   validateForm();
   if (Object.keys(errors.value).length > 0) {
+    Swal.fire({
+      title: "Lỗi!",
+      text: "Cập nhật thất bại.",
+      icon: "error",
+      confirmButtonText: "Thử lại"
+    });
     return;
   }
 
   try {
     typeRoom.value.price = parseInt(typeRoom.value.price);
     await axios.put(API_URL_EDIT, typeRoom.value);
-    alert("Cập nhật thành công");
+    Swal.fire({
+      title: "Thành công!",
+      text: "Cập nhật thành công.",
+      icon: "success",
+      confirmButtonText: "OK"
+    });
     router.push("/admin/type-rooms/list-type-room");
   } catch (error) {
     console.error("Lỗi cập nhật:", error);
-    alert("Cập nhật thất bại!");
+    Swal.fire({
+      title: "Lỗi!",
+      text: "Cập nhật thất bại.",
+      icon: "error",
+      confirmButtonText: "Thử lại"
+    });
   }
 };
 

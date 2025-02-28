@@ -33,16 +33,16 @@
                     <tr v-for="service in filteredServices">
                         <td>{{ service?.id }}</td>
                         <td>{{ service?.name }}</td>
-                        <td>{{ service?.price }}</td>
+                        <td>{{ formatPrice(service?.price) }}</td>
                         <td>{{ service?.description }}</td>
                         <td>
                             <img :src="service?.imageService" alt="" width="100px" height="80px">
                         </td>
                         <td>
                             <div class="action btn d-flex gap-4">
-                                <a href="" @click="editService(service?.id)" class="btn btn-warning text-dark px-2 py-1 rounded"><i
+                                <a @click="editService(service?.id)" class="btn btn-warning text-dark px-2 py-1 rounded"><i
                                         class="bi bi-pencil"></i></a>
-                                <a href="" @click="deleteTypeRoom(service?.id)" class="btn btn-danger text-light px-2 py-1 rounded"><i
+                                <a @click="DeleteService(service?.id)" class="btn btn-danger text-light px-2 py-1 rounded"><i
                                         class="bi bi-trash"></i></a>
                             </div>
                         </td>
@@ -81,13 +81,18 @@ const router = useRouter();
 const API_GETALL = "http://localhost:5287/api/Service/GetServices"
 const API_DELETE = "http://localhost:5287/api/Service/DeleteService/"
 
+
 const serviceList = async () => {
     try {
         const response = await axios.get(API_GETALL);
-        services.value = response.data
+        services.value = response.data.reverse();
     } catch (error) {
         console.log("Lỗi!" + error);
     }
+}
+
+const formatPrice = (value) => {
+    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 }
 
 const filteredServices = computed(() => {
@@ -100,18 +105,30 @@ const editService = (id) => {
     router.push(`/admin/services-management/edit-service/${id}`);
 }
 
-const deleteTypeRoom = (id) => {
-    const _confirm = confirm("Bạn có chắc muốn xóa không?");
-    if(_confirm) {
-        try {
-            axios.delete(API_DELETE + `${id}`)
-            alert("Xóa thành công")
-            serviceList()
-        } catch (error) {
-            console.log("Lỗi!" + error);
-        }
+
+const DeleteService = async (id) => {
+  Swal.fire({
+    title: "Bạn có chắc muốn xóa?",
+    text: "Hành động này không thể hoàn tác!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy"
+  }).then( async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(API_DELETE + `${id}`);
+        Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
+        await serviceList(); 
+      } catch (error) {
+        console.error("Lỗi!", error);
+        Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
+      }
     }
-}
+  });
+};
 
 onMounted(serviceList)
 </script>
