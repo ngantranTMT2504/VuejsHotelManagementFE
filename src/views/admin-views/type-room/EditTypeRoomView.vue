@@ -1,37 +1,42 @@
 <template>
   <div class="mt-4 my-5">
     <h3 class="text-dark text-center">Edit type room</h3>
-
     <form class="container w-75 my-5" @submit.prevent="editTypeRoom">
-      <div class="mb-3">
-        <label for="typeName" class="form-label fw-semibold">Tên loại phòng:</label>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="mb-3">
+        <label for="typeName" class="form-label fw-semibold">Name type room:</label>
         <input type="text" id="typeName" v-model="typeRoom.name" class="form-control" @input="validateField('name')">
         <span class="text-danger error">{{ errors.name }}</span>
       </div>
       <div class="mb-3">
-        <label for="price" class="form-label fw-semibold">Giá:</label>
+        <label for="price" class="form-label fw-semibold">Price:</label>
         <input type="text" id="price" v-model="typeRoom.price" class="form-control" @input="validateField('price')">
         <span class="text-danger error">{{ errors.price }}</span>
       </div>
       <div class="mb-3">
-        <label for="capacity" class="form-label fw-semibold">Sức chứa:</label>
+        <label for="capacity" class="form-label fw-semibold">Capacity:</label>
         <input type="number" id="capacity" v-model="typeRoom.capacity" class="form-control"
           @input="validateField('capacity')">
         <span class="text-danger error">{{ errors.capacity }}</span>
       </div>
-      <div class="mb-3">
-        <label for="description" class="form-label fw-semibold">Mô tả:</label>
-        <textarea id="description" v-model="typeRoom.description" class="form-control"
-          @input="validateField('description')"></textarea>
-        <span class="text-danger error">{{ errors.description }}</span>
-      </div>
-      <div class="mb-3">
-        <label for="roomImage" class="form-label fw-semibold">Hình ảnh:</label>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+        <label for="roomImage" class="form-label fw-semibold">Image:</label>
         <input type="file" id="roomImage" @change="handleFileUpload" class="form-control" accept="image/*" />
       </div>
       <div v-if="typeRoom.imageRoom">
-        <p>Ảnh đã upload:</p>
-        <img :src="typeRoom.imageRoom" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
+        <p>Image uploaded:</p>
+        <img :src="typeRoom.imageRoom" alt="Uploaded Image" class="img-thumbnail" width="200" height="200">
+      </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label fw-semibold">Description:</label>
+        <textarea id="description" v-model="typeRoom.description" class="form-control" rows="5"
+          @input="validateField('description')"></textarea>
+        <span class="text-danger error">{{ errors.description }}</span>
       </div>
       <div class="d-flex gap-3 justify-content-end">
         <button type="submit" class="btn btn-primary">Edit</button>

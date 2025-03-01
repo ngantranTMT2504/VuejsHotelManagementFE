@@ -14,15 +14,18 @@
                                 </a>
                             </div>
                             <h2 class="mb-4 text-center">Login</h2>
-                            <form class="px-5">
+                            <form class="px-5" @submit.prevent="login">
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                                    <input type="email" class="form-control" id="email" v-model="form.Email"
+                                        placeholder="Enter your email" @input="validateField('Email')">
+                                    <small v-if="errors.Email" class="text-danger">{{ errors.Email }}</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password"
-                                        placeholder="Enter your password">
+                                    <input type="password" class="form-control" id="password" v-model="form.Password"
+                                        placeholder="Enter your password" @input="validateField('Password')">
+                                    <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
                                 </div>
                                 <button type="submit" class="button-primary w-100">Login</button>
 
@@ -39,7 +42,7 @@
                                     </button>
                                 </div>
                             </form>
-                            <p class="text-center mt-3">Already have an account yet?<a href="/register">Register</a></p>
+                            <p class="text-center mt-3">Already have an account yet?<RouterLink to="/login">Register</RouterLink></p>
                         </div>
                     </div>
                 </div>
@@ -47,7 +50,57 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
+import axios from 'axios';
+import { ref } from 'vue';
+import { useRouter , RouterLink} from 'vue-router';
+
+const API_LOGIN = "http://localhost:5287/api/Authenticate/login";
+const router = useRouter();
+
+const form = ref({
+    Email: "",
+    Password: "",
+});
+
+const errors = ref({});
+
+const validateField = (field) => {
+    switch (field) {
+        case "Email":
+            errors.value.Email = form.value.Email ? "" : "Email không được để trống";
+            break;
+        case "Password":
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
+            errors.value.Password = form.value.Password
+                ? passwordRegex.test(form.value.Password)
+                    ? ""
+                    : "Password phải ít nhất 8 kí tự với số, chữ hoa, chữ thường và kí tự đặt biệt"
+                : "Password không được để trống";
+            break; 
+    }
+};
+
+const login = async () => {
+    Object.keys(form.value).forEach(field => validateField(field)); 
+
+    if (Object.values(errors.value).some(error => error)) {
+        console.warn("Có lỗi, không gửi form:", errors.value);
+        return;
+    }
+
+    try {
+        console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
+        const response = await axios.post(API_LOGIN, form.value);
+        Swal.fire("Success!", "You have registered successfully.", "success");
+        router.push("/login");
+        return response;
+    } catch (error) {
+        console.error("Lỗi:", error);
+        Swal.fire("Error!", "Something went wrong.", "error");
+        return null;
+    }
+};
 
 </script>
 <style>
@@ -76,13 +129,13 @@
     border-bottom-left-radius: 12px;
 }
 
-.icon-close{
-   position: absolute;
-   top: 0; 
-   left: 10px;
+.icon-close {
+    position: absolute;
+    top: 0;
+    left: 10px;
 }
 
-.icon-close a>i:hover{
+.icon-close a>i:hover {
     color: var(--secondary-text);
 }
 

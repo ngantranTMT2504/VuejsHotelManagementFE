@@ -3,37 +3,37 @@
         <h3 class="text-dark text-center">Edit Room</h3>
         <form class="container w-75 my-5" @submit.prevent="editRoom">
             <div class="mb-3">
-                <label for="roomNumber" class="form-label fw-semibold">Số phòng:</label>
+                <label for="roomNumber" class="form-label fw-semibold">Room number:</label>
                 <input type="text" id="roomNumber" v-model="room.numberRoom" class="form-control"
                     @input="validateField('numberRoom')" />
                 <span v-if="errors.numberRoom" class="text-danger">{{ errors.numberRoom }}</span>
             </div>
 
             <div class="mb-3">
-                <label for="typeRoom" class="form-label fw-semibold">Loại phòng:</label>
+                <label for="typeRoom" class="form-label fw-semibold">Type room:</label>
                 <select id="typeRoom" v-model="room.typeRoomId" class="form-select"
                     @change="validateField('typeRoomId')">
-                    <option value="" disabled>Chọn loại phòng</option>
+                    <option value="" disabled>Choose type room</option>
                     <option v-for="type in typeRooms" :key="type.id" :value="type.id">{{ type.name }}</option>
                 </select>
                 <span v-if="errors.typeRoomId" class="text-danger">{{ errors.typeRoomId }}</span>
             </div>
 
             <div class="mb-3">
-                <label for="status" class="form-label fw-semibold">Trạng thái:</label>
+                <label for="status" class="form-label fw-semibold">Status:</label>
                 <select id="status" v-model="room.status" class="form-select" @change="validateField('status')">
-                    <option value="">Chọn trạng thái</option>
-                    <option value="0">Trống</option>
-                    <option value="1">Đã có khách</option>
-                    <option value="2">Cần dọn dẹp</option>
-                    <option value="3">Bảo trì</option>
+                    <option value="">Choose status</option>
+                    <option value="0">Available</option>
+                    <option value="1">Occupied</option>
+                    <option value="2">Maintenance</option>
+                    <option value="3">NeedsCleaning</option>
                 </select>
                 <span v-if="errors.status" class="text-danger">{{ errors.status }}</span>
             </div>
 
             <div class="d-flex gap-3 justify-content-end">
+                <button type="button" class="btn btn-warning" @click="router.back()">Back</button>
                 <button type="submit" class="btn btn-primary">Edit</button>
-                <button type="button" class="btn btn-success" @click="router.back()">Back</button>
             </div>
         </form>
     </div>

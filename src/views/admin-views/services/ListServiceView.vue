@@ -24,7 +24,7 @@
                         <th scope="col">ID</th>
                         <th scope="col" style="width: 150px">Name</th>
                         <th scope="col" style="width: 150px">Price</th>
-                        <th scope="col">Description</th>
+                        
                         <th scope="col">Image</th>
                         <th scope="col" class="">Action</th>
                     </tr>
@@ -34,9 +34,9 @@
                         <td>{{ service?.id }}</td>
                         <td>{{ service?.name }}</td>
                         <td>{{ formatPrice(service?.price) }}</td>
-                        <td>{{ service?.description }}</td>
+                        
                         <td>
-                            <img :src="service?.imageService" alt="" width="100px" height="80px">
+                            <img :src="service?.imageService" alt="" width="120px" height="100px">
                         </td>
                         <td>
                             <div class="action btn d-flex gap-4">

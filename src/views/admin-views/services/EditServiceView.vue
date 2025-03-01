@@ -2,36 +2,42 @@
   <div class="container mt-4 my-5">
     <h2 class="mb-3">Edit Service</h2>
     <form class="container w-75 my-5" @submit.prevent="editService">
-      <div class="mb-3">
-        <label for="serviceName" class="form-label fw-semibold">Tên dịch vụ:</label>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="mb-3">
+        <label for="serviceName" class="form-label fw-semibold">Name service:</label>
         <input type="text" v-model="service.name" id="serviceName" class="form-control"
           @input="validateField('name')" />
         <span class="text-danger" v-if="errors.name">{{ errors.name }}</span>
       </div>
       <div class="mb-3">
-        <label for="servicePrice" class="form-label fw-semibold">Giá:</label>
+        <label for="servicePrice" class="form-label fw-semibold">Price:</label>
         <input type="text" v-model="service.price" id="servicePrice" class="form-control"
           @input="validateField('price')" />
         <span class="text-danger" v-if="errors.price">{{ errors.price }}</span>
       </div>
-      <div class="mb-3">
-        <label for="serviceDescription" class="form-label fw-semibold">Mô tả:</label>
-        <textarea v-model="service.description" id="serviceDescription" class="form-control"
-          @input="validateField('description')"></textarea>
-        <span class="text-danger" v-if="errors.description">{{ errors.description }}</span>
-      </div>
-      <div class="mb-3">
-        <label for="serviceImage" class="form-label fw-semibold">Hình ảnh:</label>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+        <label for="serviceImage" class="form-label fw-semibold">Image:</label>
         <input type="file" id="serviceImage" @change="handleFileUpload" class="form-control" accept="image/*" />
         <span class="text-danger" v-if="errors.imageService">{{ errors.imageService }}</span>
       </div>
       <div v-if="service.imageService">
-        <p>Ảnh đã upload:</p>
-        <img :src="service.imageService" alt="Uploaded Image" class="img-thumbnail" width="100" height="100" />
+        <p>Image uploaded:</p>
+        <img :src="service.imageService" alt="Uploaded Image" class="img-thumbnail" width="200" height="200" />
+      </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="serviceDescription" class="form-label fw-semibold">Description:</label>
+        <textarea v-model="service.description" id="serviceDescription" class="form-control" rows="5"
+          @input="validateField('description')"></textarea>
+        <span class="text-danger" v-if="errors.description">{{ errors.description }}</span>
       </div>
       <div class="d-flex gap-3 justify-content-end">
+        <RouterLink to="/admin/services-management/list-service" type="button" class="btn btn-warning">Back</RouterLink>
         <button type="submit" class="btn btn-primary">Edit</button>
-        <button type="button" class="btn btn-success" @click="router.go(-1)">Back</button>
       </div>
     </form>
   </div>
@@ -40,7 +46,7 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, RouterLink } from "vue-router";
 
 const API_URL_EDIT = "http://localhost:5287/api/Service/UpdateService";
 const API_GET_ID = "http://localhost:5287/api/Service/GetService/";

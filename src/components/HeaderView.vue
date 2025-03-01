@@ -4,7 +4,6 @@
         <div class="header_wrapper">
             <nav class="navbar navbar-expand-lg">
                 <div class="container">
-
                     <RouterLink class="navbar-brand" to="/">
                         <img :src="logo" alt="logo.png" class="img-flud" />
                     </RouterLink>
@@ -35,6 +34,9 @@
                             </li>
                             <li class="nav-item">
                                 <RouterLink class="nav-link" to="/contact">Contact</RouterLink>
+                            </li>
+                            <li class="nav-item mt-3 mt-lg-0">
+                                <RouterLink class="nav-link" to="/booking-detail">Your booking</RouterLink>
                             </li>
                             <li class="nav-item mt-3 mt-lg-0">
                                 <RouterLink class="main-btn" to="/login">Login</RouterLink>

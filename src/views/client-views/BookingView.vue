@@ -240,26 +240,26 @@
                         <form class="px-5">
                             <div class="mb-3">
                                 <label for="check-in" class="form-label fw-semibold">Check-in</label>
-                                <input type="date" class="form-control" v-model="checkInDate" required />
+                                <input type="date" class="form-control" v-model="bookingData.dateCheckin" required />
                             </div>
                             <div class="mb-3">
                                 <label for="check-out" class="form-label fw-semibold">Check-out</label>
-                                <input type="date" class="form-control" v-model="checkOutDate" required />
+                                <input type="date" class="form-control" v-model="bookingData.dateCheckout" required />
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Room</label>
                                 <select v-model.number="roomCount" class="form-select">
-                                    <option :value="1">1</option>
-                                    <option :value="2">2</option>
-                                    <option :value="3">3</option>
+                                    <option :value=1>1</option>
+                                    <option :value=2>2</option>
+                                    <option :value=3>3</option>
                                 </select>
                             </div>
 
                             <div class="row mb-3">
                                 <label class="form-label fw-semibold">Peoples</label>
                                 <div class="col-lg mb-6 mb-lg-0">
-                                    <select class="form-select" v-model.number="selectedAdults">
+                                    <select class="form-select">
                                         <option disabled>Adults</option>
                                         <option :value="1">1</option>
                                         <option :value="2">2</option>
@@ -270,7 +270,7 @@
                                     </select>
                                 </div>
                                 <div class="col-lg mb-6 mb-lg-0">
-                                    <select class="form-select" v-model.number="selectedChildren">
+                                    <select class="form-select">
                                         <option disabled>Children</option>
                                         <option :value="0">0</option>
                                         <option :value="1">1</option>
@@ -291,7 +291,6 @@
                                     </option>
                                 </select>
                             </div>
-
                             <label class="form-label fw-semibold">Extra Services</label>
                             <div v-for="service in services" :key="service.id" class="mb-3">
                                 <div class="form-check">
@@ -309,13 +308,9 @@
                                 <p class="text-white">{{ formatPrice(totalPrice) }}</p>
                             </div>
                             <div class="d-flex justify-content-center">
-                                <RouterLink :to="{
-                                    path: '/payment',
-                                    query: { price: parsePrice(totalPrice) }
-                                }" class="btn-payment w-100 text-center">
-                                    Pay for your Booking
-                                </RouterLink>
-
+                                <a class="btn-payment w-100 text-center" @click.prevent="handleBooking">
+                                    Booking
+                                </a>
                             </div>
                         </form>
 
@@ -323,7 +318,6 @@
                 </div>
             </div>
         </div>
-
     </main>
 </template>
 
@@ -331,24 +325,73 @@
 import BannerBooking1 from '@/assets/images/Booking/room-single-img-09.jpg'
 import BannerBooking2 from '@/assets/images/Booking/room-single-img-11.jpg'
 import axios from 'axios';
-import { RouterLink , useRoute, useRouter} from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { ref, onMounted, computed } from 'vue'
 
 const route = useRoute();
 const router = useRouter();
 const API_GET_SERVICE = "http://localhost:5287/api/Service/GetServices"
 const API_GET_TYPE_ROOM = "http://localhost:5287/api/TypeRoom/GetTypeRooms";
-
+const API_ADD = "http://localhost:5287/api/Booking/AddBooking";
+const API_ADD_BookingService = "http://localhost:5287/api/BookingService/AddBookingService"
 const services = ref([])
 const typeRooms = ref([]);
+const selectedServices = ref([]);
+const selectedRoomType = ref(null);
+const roomCount = ref(1);
 
+const bookingData = ref({
+    "userId": 1,
+    "roomCount": null,
+    "dateCheckin": null,
+    "dateCheckout": null,
+    "totalPrice": null,
+    "Status": 0,
+    "totalRoom": null
+});
+
+const createBooking = async () => {
+    try {
+        bookingData.value.totalPrice = totalPrice.value;
+        bookingData.value.totalRoom = roomCount.value;
+        const bookingResponse = await axios.post(API_ADD, bookingData.value);
+        const bookingId = bookingResponse.data.id;
+        console.log("Booking id:" + bookingId);
+
+         // Nếu có chọn dịch vụ, tạo BookingService
+         if (selectedServices.value.length > 0) {
+            for (const serviceId of selectedServices.value) {
+                const service = services.value.find(s => s.id === serviceId);
+                if (service) {
+                    await axios.post(API_ADD_BookingService, {
+                        bookingId: bookingId,
+                        serviceId: service.id,
+                        totalPrice: service.price,
+                        quantity: 1
+                    });
+                }
+            }
+        }
+        Swal.fire("Đã thêm!", "Bạn đã booking thành công. Vui lòng chờ điện thoại trong 24h để được xác nhận", "success");
+        router.push("/booking");
+    } catch (error) {
+        console.error("Lỗi:", error);
+        Swal.fire("Lỗi!", "Có lỗi xảy ra khi thêm.", "error");
+
+    }
+};
+
+const handleBooking = async () => {
+    await createBooking();
+    
+};
 
 const formatPrice = (value) => {
     return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
 }
 const parsePrice = (formattedPrice) => {
     if (typeof formattedPrice !== "string") {
-        formattedPrice = formattedPrice.toString(); 
+        formattedPrice = formattedPrice.toString();
     }
     return parseInt(formattedPrice.replace(/[^\d]/g, ""), 10);
 };
@@ -363,10 +406,7 @@ const List = async () => {
         console.error("Lỗi!", error);
     }
 };
-
-const selectedServices = ref([]);
-const selectedRoomType = ref(null);
-const roomCount = ref(1);
+onMounted(List);
 
 const totalPrice = computed(() => {
     let serviceTotal = selectedServices.value.reduce((sum, serviceId) => {
@@ -383,7 +423,7 @@ const totalPrice = computed(() => {
     return (serviceTotal + roomPrice) * roomCount.value;
 })
 
-onMounted(List);
+
 
 </script>
 

@@ -8,7 +8,6 @@
                 </RouterLink>
             </div>
         </div>
-
         <!-- Thanh tìm kiếm -->
         <div class="d-flex justify-content-between align-items-center gap-4 w-50 mb-3">
             <input type="text" class="form-control w-100" v-model="searchQuery" placeholder="Search by name">
@@ -18,7 +17,6 @@
                 </a>
             </div>
         </div>
-
         <!-- Bảng danh sách loại phòng -->
         <div class="list-user mb-5">
             <table class="table-design w-100">
@@ -28,9 +26,9 @@
                         <th scope="col" style="width: 150px">Type Name</th>
                         <th scope="col" style="width: 150px">Price per night</th>
                         <th scope="col">Capacity</th>
-                        <th scope="col">Description</th>
+                        
                         <th scope="col">Image</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,9 +37,9 @@
                         <td>{{ type?.name }}</td>
                         <td>{{ formatPrice(type?.price) }}</td>
                         <td>{{ type?.capacity }}</td>
-                        <td>{{ type?.description }}</td>
+                       
                         <td>
-                            <img :src="type?.imageRoom" alt="Room Image" width="100" height="80">
+                            <img :src="type?.imageRoom" alt="Room Image" width="120" height="100">
                         </td>
                         <td class="text-center">
                             <div class="d-flex gap-2">

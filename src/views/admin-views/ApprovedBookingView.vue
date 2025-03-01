@@ -1,8 +1,8 @@
 <template>
     <div class="container mt-4">
         <h2>Booking Information</h2>
-        <table class="table table-bordered table-striped">
-            <thead class="table-primary">
+        <table class="table-design w-100">
+            <thead >
                 <tr>
                     <th>Booking ID</th>
                     <th>Client ID</th>
@@ -10,63 +10,104 @@
                     <th>Check-out Date</th>
                     <th>Total Price</th>
                     <th>Total Rooms</th>
-                    <th>Payment Method</th>
-                    <th>Payment Amount</th>
-                    <th>Rooms</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="booking in bookings" :key="booking.ID">
-                    <td>{{ booking.ID }}</td>
-                    <td>{{ booking.client }}</td>
-                    <td>{{ booking.checkInDate }}</td>
-                    <td>{{ booking.checkOutDate }}</td>
-                    <td>{{ booking.price }}</td>
+                <tr v-for="booking in bookings" :key="booking.id">
+                    <td>{{ booking.id }}</td>
+                    <td>{{ booking.userID }}</td>
+                    <td>{{ formatDate(booking.dateCheckin) }}</td>
+                    <td>{{ formatDate(booking.dateCheckout) }}</td>
+                    <td>{{ formatPrice(booking.totalPrice) }}</td>
                     <td>{{ booking.totalRoom }}</td>
-                    <td>{{ booking.PaymentMethod }}</td>
-                    <td>{{ booking.PaymentAmount }}</td>
-                    <td>{{ booking.Room }}</td>
+                    <td>{{ booking.statusName }}</td>
                     <td>
-                        <div class="action btn d-flex gap-4">
-                            <a href="" class="btn btn-danger text-dark px-2 py-1 rounded">
-                                Cancel
+                        <div class="action btn d-flex gap-4" v-if="booking.status == 0">
+                            <a class="btn btn-warning text-dark px-2 py-1 rounded" @click="approvedBooking(booking.id)">
+                                Approved
                             </a>
                         </div>
                     </td>
-
                 </tr>
-                <!-- Thêm các hàng khác tại đây -->
             </tbody>
         </table>
     </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-const bookings = ref([
-    {
-        ID: 1,
-        client: 'John Doe',
-        checkInDate: '2023-10-01',
-        checkOutDate: '2023-10-05',
-        price: '$500.00',
-        totalRoom: 2,
-        PaymentMethod: 'Credit Card',
-        PaymentAmount: '$250.00',
-        Room: '101 , 102'
-    },
-    {
-        ID: 2,
-        client: 'Jane Smith',
-        checkInDate: '2023-10-10',
-        checkOutDate: '2023-10-15',
-        price: '$700.00',
-        totalRoom: 3,
-        PaymentMethod: 'PayPal',
-        PaymentAmount: '$350.00',
-         Room: '201 , 202'
+const bookings = ref([]);
+const router = useRouter();
+
+const API_GETALL = "http://localhost:5287/api/Booking/GetBooking";
+const API_EDIT = "http://localhost:5287/api/Booking/UpdateBooking";
+const API_GET_ID = "http://localhost:5287/api/Booking/GetBooking/";
+
+const bookingList = async () => {
+    try {
+        const response = await axios.get(API_GETALL);
+        bookings.value = response.data.reverse();
+        if (bookings.value[0] !== null) {
+            bookings.value.forEach(element => {
+                switch (element?.status) {
+                    case 0:
+                        element.statusName = "Pending";
+                        break;
+                    case 1:
+                        element.statusName = "Confirmed";
+                        break;
+                    case 2:
+                        element.statusName = "Cancelled";
+                        break;
+                    default:
+                        element.statusName = "None";
+                        break;
+                }
+            });
+        }
+    } catch (error) {
+        console.error("Lỗi!", error);
     }
-])
+};
+
+onMounted(bookingList)
+
+const approvedBooking = async(id) => {
+  try {
+    const response = await axios.get(API_GET_ID + id);
+    let booking = response.data; 
+    booking.status = 1;
+    await axios.put(API_EDIT, booking);
+    Swal.fire({
+      title: "Thành công!",
+      text: "Cập nhật thành công.",
+      icon: "success",
+      confirmButtonText: "OK"
+    });
+    bookingList();
+    router.push("/admin/approved-booking");
+
+  } catch (error) {
+    console.error("Lỗi cập nhật:", error);
+    Swal.fire({
+      title: "Lỗi!",
+      text: "Cập nhật thất bại.",
+      icon: "error",
+      confirmButtonText: "Thử lại"
+    });
+  }
+};
+
+const formatPrice = (value) => {
+    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
+const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('vi-VN');
+};
 </script>
 <style></style>

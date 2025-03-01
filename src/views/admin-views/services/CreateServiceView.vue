@@ -1,37 +1,42 @@
 <template>
   <div class="container mt-4 my-5">
-    <h2 class="mb-3">Create Service</h2>
+    <h2 class="mb-3 text-center">Create Service</h2>
     <form class="container w-75 my-5" @submit.prevent="createService">
-      <div class="mb-3">
-        <label for="serviceName" class="form-label fw-semibold">Tên dịch vụ:</label>
-        <input type="text" v-model="name" id="serviceName" class="form-control" @input="validateField('name')" />
-        <span class="text-danger" v-if="errors.name">{{ errors.name }}</span>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <label for="serviceName" class="form-label fw-semibold ">Name service:</label>
+            <input type="text" v-model="name" id="serviceName" class="form-control" @input="validateField('name')" />
+            <span class="text-danger" v-if="errors.name">{{ errors.name }}</span>
+          </div>
+          <div class="mb-3">
+            <label for="servicePrice" class="form-label fw-semibold">Price:</label>
+            <input type="text" v-model="price" id="servicePrice" class="form-control" @input="validateField('price')" />
+            <span class="text-danger" v-if="errors.price">{{ errors.price }}</span>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <label for="serviceImage" class="form-label fw-semibold">Image:</label>
+            <input type="file" id="serviceImage" @change="handleFileUpload" class="form-control" accept="image/*" />
+            <span class="text-danger" v-if="errors.image">{{ errors.image }}</span>
+          </div>
+          <div v-if="imageUrl">
+            <p>Image uploaded:</p>
+            <img :src="imageUrl" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
+          </div>
+        </div>
       </div>
       <div class="mb-3">
-        <label for="servicePrice" class="form-label fw-semibold">Giá:</label>
-        <input type="text" v-model="price" id="servicePrice" class="form-control" @input="validateField('price')" />
-        <span class="text-danger" v-if="errors.price">{{ errors.price }}</span>
-      </div>
-      <div class="mb-3">
-        <label for="serviceDescription" class="form-label fw-semibold">Mô tả:</label>
-        <textarea id="serviceDescription" v-model="description" class="form-control"
+        <label for="serviceDescription" class="form-label fw-semibold">Description:</label>
+        <textarea id="serviceDescription" v-model="description" class="form-control" rows="5"
           @input="validateField('description')"></textarea>
         <span class="text-danger" v-if="errors.description">{{ errors.description }}</span>
       </div>
-      <div class="mb-3">
-        <label for="serviceImage" class="form-label fw-semibold">Hình ảnh:</label>
-        <input type="file" id="serviceImage" @change="handleFileUpload" class="form-control" accept="image/*" />
-        <span class="text-danger" v-if="errors.image">{{ errors.image }}</span>
-      </div>
-      <div v-if="imageUrl">
-        <p>Ảnh đã upload:</p>
-        <img :src="imageUrl" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
-      </div>
       <div class="d-flex gap-3 justify-content-end">
+        <RouterLink to="/admin/services-management/list-service" type="reset" class="btn btn-warning">Back</RouterLink>
         <button type="submit" class="btn btn-primary">Create</button>
-        <RouterLink to="/admin/services-management/list-service" type="reset" class="btn btn-success" >Back</RouterLink>
       </div>
-
     </form>
   </div>
 </template>
@@ -99,7 +104,7 @@ const validateForm = () => {
   validateField("description");
   validateField("image");
 
-  return Object.keys(errors.value).length === 0; 
+  return Object.keys(errors.value).length === 0;
 };
 
 const createService = async () => {
