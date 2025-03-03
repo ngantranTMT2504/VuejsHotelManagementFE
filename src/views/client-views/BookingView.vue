@@ -325,8 +325,10 @@
 import BannerBooking1 from '@/assets/images/Booking/room-single-img-09.jpg'
 import BannerBooking2 from '@/assets/images/Booking/room-single-img-11.jpg'
 import axios from 'axios';
-import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { ref, onMounted, computed } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
+import {jwtDecode} from "jwt-decode";
+import {UserId, TOKEN} from "@/utils/constants.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -352,6 +354,12 @@ const bookingData = ref({
 
 const createBooking = async () => {
     try {
+        if (sessionStorage.getItem(TOKEN)) {
+            const token = sessionStorage.getItem(TOKEN);
+            const decoded = jwtDecode(token);
+            bookingData.value.userId = decoded[UserId];
+        }
+ 
         bookingData.value.totalPrice = totalPrice.value;
         bookingData.value.totalRoom = roomCount.value;
         const bookingResponse = await axios.post(API_ADD, bookingData.value);

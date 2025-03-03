@@ -77,6 +77,7 @@
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import Swal from "sweetalert2";
 
 const typeRooms = ref([]);
 const searchQuery = ref("");

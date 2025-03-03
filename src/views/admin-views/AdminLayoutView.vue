@@ -9,7 +9,7 @@
         <RouterLink to="/admin/services-management" class="sidebar-link">Services</RouterLink>
         <RouterLink to="/admin/rooms-management" class="sidebar-link">Rooms</RouterLink>
         <RouterLink to="/admin/approved-booking" class="sidebar-link">Booking</RouterLink>
-        <RouterLink to="/login" class="sidebar-link">Log out</RouterLink>
+        <RouterLink to="/login" @click="clearToken()" class="sidebar-link">Log out</RouterLink>
     </div>
     <main>
         <div class="content">
@@ -52,13 +52,19 @@ import { RouterLink} from 'vue-router';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import logosidebar from '@/assets/images/about/logo.png'
-import AdminDashboardView from '@/views/admin-views/DashboardView.vue' 
+import AdminDashboardView from '@/views/admin-views/DashboardView.vue'
+import {TOKEN} from "@/utils/constants.js";
 
 const route = useRoute();
 
 const currentComponent = computed(()=>{
     return route.matched.length > 1 ? 'router-view' : AdminDashboardView
 })
+
+const clearToken = () => {
+    sessionStorage.removeItem(TOKEN);
+}
+
 </script>
 <style>
 .header{

@@ -1,15 +1,14 @@
 <template>
     <div>
-        <div v-if="bookings.length <= 0">
-            <p class="text-center fs-4 my-5 text-danger">You have no previous booking</p>
+        <div v-if="bookings.length <= 0" class="py-5">
+            <p class="text-center fs-4 my-5 text-danger">You have not made any previous bookings</p>
             <div class="text-center">
                 <RouterLink to="/booking" type="submit" class="button-primary px-3">
                     Booking now
                 </RouterLink>
-
             </div>
         </div>
-        <div class="container my-5">
+        <div class="container my-5" v-if="bookings.length > 0">
             <h2>Your booking</h2>
             <table class="table-design w-100">
                 <thead>
@@ -38,7 +37,7 @@
                         <td>
                             <div class="action btn d-flex gap-4" v-if="booking.status == 0">
                                 <a class="btn btn-warning text-dark px-2 py-1 rounded"
-                                    @click="approvedBooking(booking.id)">
+                                    @click="cancelBooking (booking.id)">
                                     cancel
                                 </a>
                             </div>
@@ -56,18 +55,28 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import {jwtDecode} from "jwt-decode";
+import {TOKEN, UserId} from "@/utils/constants.js";
 
 const bookings = ref([]);
-const services = ref([]);
 const router = useRouter();
 
 const API_GETALL = "http://localhost:5287/api/Booking/GetBooking";
 const API_EDIT = "http://localhost:5287/api/Booking/UpdateBooking";
 const API_GET_ID = "http://localhost:5287/api/Booking/GetBooking/";
 
+
+const userId = ref('');
+if (sessionStorage.getItem(TOKEN)) {
+    const token = sessionStorage.getItem(TOKEN);
+    const decoded = jwtDecode(token);
+    userId.value = decoded[UserId];
+    // console.log(decoded);
+}
+
 const bookingList = async () => {
     try {
-        const userId = 1;
+        const userId = userId.value;
         const response = await axios.get(API_GETALL);
         response.data.forEach(element => {
 
@@ -103,7 +112,6 @@ onMounted(bookingList)
 
 const cancelBooking = async (id) => {
     try {
-        
         const response = await axios.get(API_GET_ID + id);
         let booking = response.data;
         booking.status = 2;

@@ -1,0 +1,36 @@
+﻿import axios from 'axios';
+import {TOKEN} from "@/utils/constants.js";
+
+const apiClient = axios.create({
+    baseURL: 'http://localhost:5287/api', // Replace with your backend API URL
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+apiClient.interceptors.request.use(
+    (config) => {
+        const token =  sessionStorage.getItem(TOKEN); 
+        
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response.status === 401) {
+            console.error('Unauthorized! Redirecting to login...');
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default apiClient;

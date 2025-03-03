@@ -1,5 +1,4 @@
 <template>
-    <!-- Navbar Section -->
     <header>
         <div class="header_wrapper">
             <nav class="navbar navbar-expand-lg">
@@ -11,7 +10,6 @@
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon fa-solid fa-bars-staggered"></span>
                     </button>
-
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul class="navbar-nav menu-navbar-nav">
                             <li class="nav-item">
@@ -38,9 +36,15 @@
                             <li class="nav-item mt-3 mt-lg-0">
                                 <RouterLink class="nav-link" to="/booking-detail">Your booking</RouterLink>
                             </li>
-                            <li class="nav-item mt-3 mt-lg-0">
+                            <li class="nav-item mt-3 mt-lg-0" v-if="!userName.length > 0">
                                 <RouterLink class="main-btn" to="/login">Login</RouterLink>
                             </li>
+                            <div class="d-flex justify-content-center" v-if="userName.length > 0">
+                                <p class="mt-2">{{ userName }}</p>
+                                <li class="nav-item ">
+                                    <RouterLink class="main-btn" to="/login" @click="clearToken()">Logout</RouterLink>
+                                </li>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -51,12 +55,19 @@
 <script setup>
 import { RouterLink} from 'vue-router';
 import logo from '@/assets/images/about/logo.png'
-import { onMounted} from 'vue';
+import { ref, onMounted} from 'vue';
+import {jwtDecode} from "jwt-decode";
+import {Role, TOKEN, Email} from "@/utils/constants.js";
 
-
+const userName = ref('');
+if (sessionStorage.getItem(TOKEN)) {
+    const token = sessionStorage.getItem(TOKEN);
+    const decoded = jwtDecode(token);
+    userName.value = decoded[Email];
+    console.log(decoded);
+}
 onMounted(()=> {
   const nav = document.querySelector(".navbar");
-  
   const handleScroll = () => {
     if(document.documentElement.scrollTop > 50) {
       nav.classList.add("header-scrolled")
@@ -64,10 +75,16 @@ onMounted(()=> {
       nav.classList.remove("header-scrolled")
     }
   }
-
-  // Lắng nghe sự kiện cuộn
   window.addEventListener("scroll", handleScroll);
 }); 
+
+
+
+
+const clearToken = () => {
+    sessionStorage.removeItem(TOKEN);
+}
+
 </script>
 <style>
 /* Navbar */

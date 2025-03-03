@@ -22,24 +22,22 @@
                         <th scope="col">Gender</th>
                         <th scope="col">Address</th>
                         <th scope="col">Role</th>
-                        <th scope="col">Status</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="user in users" :key="user.ID">
-                        <td>{{ user.ID }}</td>
-                        <td>{{ user.Email }}</td>
-                        <td>{{ user.Phone }}</td>
-                        <td>{{ user.FullName }}</td>
-                        <td>{{ user.DateOfBirth }}</td>
+                    <tr v-for="user in users" :key="user.id">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phoneNumber }}</td>
+                        <td>{{ user.fullName }}</td>
+                        <td>{{ user.dateOfBirth }}</td>
                         <td>{{ user.Gender }}</td>
-                        <td>{{ user.AddressClient }}</td>
-                        <td>{{ user.Role }}</td>
-                        <td>{{ user.Status }}</td>
+                        <td>{{ user.address }}</td>
+                        <td>{{ user.role }}</td>
                         <td>
-                            <div class="action btn ">
-                                <a href="" class="btn btn-danger text-dark px-2 py-1 rounded">Block</a>
+                            <div v-if="user.role == 'User'" class="action btn ">
+                                <a @click="deleteUser(user.userName)" class="btn btn-danger text-dark px-2 py-1 rounded">Delete</a>
                                
                             </div>
                         </td>
@@ -67,100 +65,50 @@
     </main>
 </template>
 <script setup>
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
+import apiClient from "@/services/axiosMiddleware.js";
+import Swal from "sweetalert2";
+import axios from "axios";
 
-const users = ref([
-    {
-        ID: 1,
-        PasswordHash: "abc123",
-        Email: "user1@example.com",
-        Phone: "0123456789",
-        FullName: "Nguyễn Văn A",
-        DateOfBirth: "1990-05-10",
-        Gender: "Male",
-        AddressClient: "Hà Nội, Việt Nam",
-        CreatedDate: "2024-02-14",
-        Role: "Admin",
-        Status: "Active",
-    },
-    {
-        ID: 2,
-        PasswordHash: "xyz789",
-        Email: "user2@example.com",
-        Phone: "0987654321",
-        FullName: "Trần Thị B",
-        DateOfBirth: "1995-08-20",
-        Gender: "Female",
-        AddressClient: "Hồ Chí Minh, Việt Nam",
-        CreatedDate: "2024-02-14",
-        Role: "User",
-        Status: "Inactive",
-    },
-    {
-        ID: 3,
-        PasswordHash: "p@ssw0rd",
-        Email: "user3@example.com",
-        Phone: "0933222111",
-        FullName: "Lê Văn C",
-        DateOfBirth: "1988-11-30",
-        Gender: "Male",
-        AddressClient: "Đà Nẵng, Việt Nam",
-        CreatedDate: "2024-02-14",
-        Role: "User",
-        Status: "Active",
-    },
-    {
-        ID: 4,
-        PasswordHash: "secure@2024",
-        Email: "user4@example.com",
-        Phone: "0909777666",
-        FullName: "Phạm Thị D",
-        DateOfBirth: "1992-07-15",
-        Gender: "Female",
-        AddressClient: "Cần Thơ, Việt Nam",
-        CreatedDate: "2024-02-14",
-        Role: "Moderator",
-        Status: "Active",
-    },
-    {
-        ID: 5,
-        PasswordHash: "test123",
-        Email: "user5@example.com",
-        Phone: "0912345678",
-        FullName: "Hoàng Văn E",
-        DateOfBirth: "1985-03-25",
-        Gender: "Male",
-        AddressClient: "Vĩnh Long, Việt Nam",
-        CreatedDate: "2024-02-14",
-        Role: "User",
-        Status: "Banned",
-    },
-    {
-        ID: 6,
-        PasswordHash: "test123",
-        Email: "user5@example.com",
-        Phone: "0912345678",
-        FullName: "Hoàng Văn E",
-        DateOfBirth: "1985-03-25",
-        Gender: "Male",
-        AddressClient: "Vĩnh Long, Việt Nam",
-        CreatedDate: "2024-02-14",
-        Role: "User",
-        Status: "Banned",
-    },
-    {
-        ID: 7,
-        PasswordHash: "test123",
-        Email: "user5@example.com",
-        Phone: "0912345678",
-        FullName: "Hoàng Văn E",
-        DateOfBirth: "1985-03-25",
-        Gender: "Male",
-        AddressClient: "Vĩnh Long, Việt Nam",
-        CreatedDate: "2024-02-14",
-        Role: "User",
-        Status: "Banned",
+const users = ref([])
+const API_GETALL = "/Admin/GetUsers";
+const API_DELETE = "/Admin/DeleteUser";
+
+const getUsersList = async () => {
+  try {
+    const response = await apiClient.get(API_GETALL);
+    users.value = response.data.reverse();
+  } catch (error) {
+    console.error("Lỗi!", error);
+  }
+};
+const deleteUser = async (id) => {
+  Swal.fire({
+    title: "Bạn có chắc muốn xóa?",
+    text: "Hành động này không thể hoàn tác!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy"
+  }).then( async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await apiClient(API_DELETE + `/${id}`, {
+          method: "DELETE",
+        });
+        await Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
+        await getUsersList();
+      } catch (error) {
+        console.error("Lỗi!", error);
+        await Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
+      }
     }
-])
+  });
+};
+
+
+onMounted(getUsersList);
 </script>
 <style></style>

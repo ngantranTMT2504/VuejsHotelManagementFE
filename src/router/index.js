@@ -30,6 +30,10 @@ import EditRoomView from "@/views/admin-views/Rooms/EditRoomView.vue";
 import CreateRoomView from "@/views/admin-views/Rooms/CreateRoomView.vue";
 import NotFoundView from "@/views/NotFoundView.vue"
 import BookingDetailView from "@/views/client-views/BookingDetailView.vue";
+import {Role, TOKEN} from "@/utils/constants.js";
+import {jwtDecode} from "jwt-decode";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +53,11 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView,
+      beforeEnter: (to, from) => {
+        if (sessionStorage.getItem(TOKEN)) {
+          return '/admin';
+        }
+      },
       meta: { hideLayout: true },
     },
     {
@@ -92,6 +101,7 @@ const router = createRouter({
       path: "/booking",
       name: "booking",
       component: BookingView,
+      meta: { role: 'User', requiresAuth: true },
     },
     {
       path: "/booking-detail",
@@ -101,7 +111,7 @@ const router = createRouter({
     {
       path: "/admin",
       component: AdminLayoutView,
-      meta: { hideLayout: true },
+      meta: { hideLayout: true, requiresAuth: true, role: 'Admin' },
       redirect: "/admin/dashboard",
       // meta: { requiresAuth: true, role: 'admin' },
       children: [
@@ -203,5 +213,44 @@ const router = createRouter({
     },
   ],
 });
+
+router.beforeEach(async (to, from) => {
+  if (to.meta.requiresAuth) {
+    const token = sessionStorage.getItem(TOKEN);
+    if (!token) return "/login";
+    const decoded = jwtDecode(token);
+    if (decoded[Role] === undefined) {
+      errorHandle()
+      return false;
+    }
+    console.log(to.meta.role?.length < 0 || !to.meta.role.includes(decoded[Role]));
+    
+    if (to.meta.role?.length < 0 || !to.meta.role.includes(decoded[Role])) {
+      errorHandle()
+      return false;
+    }
+  }
+});
+
+function errorHandle() {
+      Swal.fire({
+        title: "Error",
+        text: "Account này không có quyền truy cập",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#d33",
+        confirmButtonText: "Ok",
+      }).then( async (result) => {
+        if (result.isConfirmed) {
+          try {
+            if (sessionStorage.getItem(TOKEN)) {
+              sessionStorage.removeItem(TOKEN);
+            }
+            router.push({ path: '/login'})
+          } catch (error) {
+          }
+        }
+      });
+}
 
 export default router;

@@ -17,13 +17,13 @@
                             <form class="px-5" @submit.prevent="login">
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" v-model="form.Email"
+                                    <input type="email" class="form-control" id="email" v-model="form.EmailAddress"
                                         placeholder="Enter your email" @input="validateField('Email')">
                                     <small v-if="errors.Email" class="text-danger">{{ errors.Email }}</small>
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" v-model="form.Password"
+                                    <input type="password" class="form-control" id="password" v-model="form.Password" 
                                         placeholder="Enter your password" @input="validateField('Password')">
                                     <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
                                 </div>
@@ -42,7 +42,7 @@
                                     </button>
                                 </div>
                             </form>
-                            <p class="text-center mt-3">Already have an account yet?<RouterLink to="/login">Register</RouterLink></p>
+                            <p class="text-center mt-3">Already have an account yet? <RouterLink to="/register">Register</RouterLink></p>
                         </div>
                     </div>
                 </div>
@@ -54,21 +54,31 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter , RouterLink} from 'vue-router';
+import CryptoJS from 'crypto-js';
+import {jwtDecode} from "jwt-decode";
+import {Role, TOKEN} from "@/utils/constants.js";
 
 const API_LOGIN = "http://localhost:5287/api/Authenticate/login";
 const router = useRouter();
 
 const form = ref({
-    Email: "",
+    EmailAddress: "",
     Password: "",
 });
 
 const errors = ref({});
 
+const resultLogin = {
+  data: {
+    token: "",
+    expiration: Date,
+  }
+};
+
 const validateField = (field) => {
     switch (field) {
         case "Email":
-            errors.value.Email = form.value.Email ? "" : "Email không được để trống";
+            errors.value.Email = form.value.EmailAddress ? "" : "Email không được để trống";
             break;
         case "Password":
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
@@ -82,6 +92,7 @@ const validateField = (field) => {
 };
 
 const login = async () => {
+
     Object.keys(form.value).forEach(field => validateField(field)); 
 
     if (Object.values(errors.value).some(error => error)) {
@@ -91,9 +102,21 @@ const login = async () => {
 
     try {
         console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
-        const response = await axios.post(API_LOGIN, form.value);
-        Swal.fire("Success!", "You have registered successfully.", "success");
-        router.push("/login");
+        const payload = {
+            EmailAddress: form.value.EmailAddress,
+            Password: encryptData(form.value.Password, "AAECAwQFBgcICQoLDA0ODw==")
+        }
+        console.log(payload);
+        const response = await axios.post(API_LOGIN, payload);
+        if ( response?.data?.token?.length > 0) {
+          sessionStorage.setItem(TOKEN, response.data.token);
+        }
+        const decoded = jwtDecode(response?.data?.token);
+        if (decoded[Role] === 'Admin') {
+            await router.push("/admin");
+        } else {
+            await router.push("/");
+        }
         return response;
     } catch (error) {
         console.error("Lỗi:", error);
@@ -101,6 +124,19 @@ const login = async () => {
         return null;
     }
 };
+
+function encryptData(plainText, base64Key) {
+  var key = CryptoJS.enc.Base64.parse(base64Key);
+  var iv = CryptoJS.lib.WordArray.random(16);
+  var encrypted = CryptoJS.AES.encrypt(plainText, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  });
+  var encryptedData = iv.concat(encrypted.ciphertext);
+
+  return CryptoJS.enc.Base64.stringify(encryptedData);
+}
 
 </script>
 <style>

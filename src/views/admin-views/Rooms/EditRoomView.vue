@@ -66,7 +66,7 @@ const typeRoomList = async () => {
 const fetchRoom = async () => {
     try {
         const res = await axios.get(API_GET_ID + `${route.params.id}`);
-        room.value = res.data.reverse();
+        room.value = res.data;
         resetErrors();
     } catch (error) {
         console.log(error);
