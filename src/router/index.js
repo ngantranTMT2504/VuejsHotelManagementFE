@@ -107,6 +107,7 @@ const router = createRouter({
       path: "/booking-detail",
       name: "booking detail",
       component: BookingDetailView,
+      meta: { role: 'User', requiresAuth: true },
     },
     {
       path: "/admin",
@@ -212,12 +213,18 @@ const router = createRouter({
       ],
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0, behavior: 'smooth' }; // Cuộn lên đầu với hiệu ứng mượt
+  }
 });
 
 router.beforeEach(async (to, from) => {
   if (to.meta.requiresAuth) {
     const token = sessionStorage.getItem(TOKEN);
-    if (!token) return "/login";
+    if (!token) {
+      Swal.fire("Lỗi!", "Không thể truy cập trang này.", "error");
+      return "/login"
+    };
     const decoded = jwtDecode(token);
     if (decoded[Role] === undefined) {
       errorHandle()

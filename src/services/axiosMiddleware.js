@@ -2,7 +2,7 @@
 import {TOKEN} from "@/utils/constants.js";
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:5287/api', // Replace with your backend API URL
+    baseURL: 'http://localhost:5287/api', 
     headers: {
         'Content-Type': 'application/json',
     },

@@ -17,7 +17,7 @@
 </script>
 <style>
 .custom-bg {
-    background: linear-gradient(to right, #e2e8f0, #e5e7eb);
+    background: linear-gradient(to right, #0c1a2e, #476092);
 }
 
 .custom-btn:hover {
@@ -28,7 +28,7 @@
 @media (prefers-color-scheme: dark) {
     .custom-bg {
         background: linear-gradient(to right, #1f2937, #111827);
-        color: white !important;
+        color: var(--secondary-color) !important;
     }
 
     .custom-btn {

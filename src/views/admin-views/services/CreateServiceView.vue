@@ -5,37 +5,40 @@
       <div class="row">
         <div class="col-lg-6">
           <div class="mb-3">
-            <label for="serviceName" class="form-label fw-semibold ">Name service:</label>
+            <label for="serviceName" class="form-label fw-semibold ">Name service(<span
+              class="text-danger fs-5">*</span>):</label>
             <input type="text" v-model="name" id="serviceName" class="form-control" @input="validateField('name')" />
             <span class="text-danger" v-if="errors.name">{{ errors.name }}</span>
           </div>
           <div class="mb-3">
-            <label for="servicePrice" class="form-label fw-semibold">Price:</label>
+            <label for="servicePrice" class="form-label fw-semibold">Price(<span
+              class="text-danger fs-5">*</span>):</label>
             <input type="text" v-model="price" id="servicePrice" class="form-control" @input="validateField('price')" />
             <span class="text-danger" v-if="errors.price">{{ errors.price }}</span>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="mb-3">
-            <label for="serviceImage" class="form-label fw-semibold">Image:</label>
+            <label for="serviceImage" class="form-label fw-semibold">Image(<span
+              class="text-danger fs-5">*</span>):</label>
             <input type="file" id="serviceImage" @change="handleFileUpload" class="form-control" accept="image/*" />
-            <span class="text-danger" v-if="errors.image">{{ errors.image }}</span>
+            <!-- <span class="text-danger" v-if="errors.image">{{ errors.image }}</span> -->
           </div>
           <div v-if="imageUrl">
-            <p>Image uploaded:</p>
             <img :src="imageUrl" alt="Uploaded Image" class="img-thumbnail" width="100" height="100">
           </div>
         </div>
       </div>
       <div class="mb-3">
-        <label for="serviceDescription" class="form-label fw-semibold">Description:</label>
+        <label for="serviceDescription" class="form-label fw-semibold">Description(<span
+          class="text-danger fs-5">*</span>):</label>
         <textarea id="serviceDescription" v-model="description" class="form-control" rows="5"
           @input="validateField('description')"></textarea>
         <span class="text-danger" v-if="errors.description">{{ errors.description }}</span>
       </div>
       <div class="d-flex gap-3 justify-content-end">
-        <RouterLink to="/admin/services-management/list-service" type="reset" class="btn btn-warning">Back</RouterLink>
-        <button type="submit" class="btn btn-primary">Create</button>
+        <RouterLink to="/admin/services-management/list-service" type="reset" class="btn btn-warning"><i class="bi bi-arrow-left-circle"></i> Back</RouterLink>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Create</button>
       </div>
     </form>
   </div>
@@ -70,10 +73,14 @@ const handleFileUpload = async (event) => {
     const response = await axios.post(CLOUDINARY_URL, formData);
     imageUrl.value = response.data.secure_url;
     delete errors.value.image;
-    Swal.fire("Thành công!", "Upload ảnh thành công.", "success");
   } catch (error) {
-    console.error("Lỗi upload ảnh:", error);
-    Swal.fire("Lỗi!", "Upload ảnh thất bại.", "error");
+    console.error(error);
+    Swal.fire({
+      title: "Error!",
+      text: "An error occurred while adding.",
+      icon: "error",
+      confirmButtonText: "Try again"
+    });
   }
 };
 
@@ -81,20 +88,17 @@ const validateField = (field) => {
   errors.value[field] = "";
 
   if (field === "name" && !name.value.trim()) {
-    errors.value.name = "Tên dịch vụ không được để trống";
+    errors.value.name = "Service name cannot be empty";
   }
   if (field === "price") {
     if (!price.value.trim()) {
-      errors.value.price = "Giá không được để trống";
+      errors.value.price = "Price cannot be empty";
     } else if (isNaN(price.value) || Number(price.value) <= 0) {
-      errors.value.price = "Giá phải là số dương";
+      errors.value.price = "Price must be a number > 0";
     }
   }
   if (field === "description" && !description.value.trim()) {
-    errors.value.description = "Mô tả không được để trống";
-  }
-  if (field === "image" && !imageUrl.value) {
-    errors.value.image = "Hình ảnh không được để trống";
+    errors.value.description = "Description cannot be empty";
   }
 };
 
@@ -102,35 +106,31 @@ const validateForm = () => {
   validateField("name");
   validateField("price");
   validateField("description");
-  validateField("image");
 
-  return Object.keys(errors.value).length === 0;
+  return Object.values(errors.value).every((err) => !err);
 };
 
 const createService = async () => {
   if (!validateForm()) {
-    Swal.fire("Lỗi!", "Vui lòng nhập đầy đủ thông tin.", "error");
     return;
   }
 
   const service = {
     name: name.value,
-    price: parseInt(price.value),
+    price:  Number(price.value),
     description: description.value,
     ImageService: imageUrl.value,
   };
 
   try {
     await axios.post(API_ADD, service);
-    Swal.fire("Thành công!", "Dịch vụ đã được thêm.", "success");
+    Swal.fire("Added!", "The data has been successfully added.", "success");
     router.push("/admin/services-management/list-service");
   } catch (error) {
     console.error("Lỗi khi thêm dịch vụ:", error);
-    Swal.fire("Lỗi!", "Không thể thêm dịch vụ.", "error");
+    Swal.fire("Error!", "An error occurred while adding.", "error");
   }
 };
-
-
 </script>
 
 <style></style>

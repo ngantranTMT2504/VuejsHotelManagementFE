@@ -1,4 +1,7 @@
 <template>
+     <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <main>
         <div class="banner-wrapper">
             <div class="row w-100 m-0">
@@ -329,6 +332,14 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import {jwtDecode} from "jwt-decode";
 import {UserId, TOKEN} from "@/utils/constants.js";
+import LoaderView from '@/components/LoaderView.vue';
+
+const isLoading = ref(true);
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000); 
+}); 
 
 const route = useRoute();
 const router = useRouter();
@@ -381,7 +392,7 @@ const createBooking = async () => {
             }
         }
         Swal.fire("Đã thêm!", "Bạn đã booking thành công. Vui lòng chờ điện thoại trong 24h để được xác nhận", "success");
-        router.push("/booking");
+        router.push("/booking-detail");
     } catch (error) {
         console.error("Lỗi:", error);
         Swal.fire("Lỗi!", "Có lỗi xảy ra khi thêm.", "error");

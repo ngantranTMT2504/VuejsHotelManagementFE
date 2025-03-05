@@ -1,4 +1,7 @@
 <template>
+    <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <main>
         <!-- About Section -->
         <section id="about" class="about_wrapper m-0 py-5">
@@ -105,6 +108,15 @@ import icon from '@/assets/images/about/icon-about-map.png'
 import Food1 from '@/assets/images/about/food-img-01.jpg'
 import Food2 from '@/assets/images/about/food-img-02.jpg'
 import Food3 from '@/assets/images/about/food-img-03.jpg'
+import LoaderView from '@/components/LoaderView.vue';
+import { onMounted , ref} from 'vue';
+
+const isLoading = ref(true);
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000); 
+});
 </script>
 <style>
 .bg-white {

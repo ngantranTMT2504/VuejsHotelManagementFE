@@ -1,4 +1,7 @@
 <template>
+     <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <main>
         <div class="bg-light p-5 mb-5">
             <h3 class=" text-dark">BLOG</h3>
@@ -190,7 +193,15 @@ import Blog10 from '@/assets/images/blog/blog-img-10.jpg'
 import Blog11 from '@/assets/images/blog/blog-img-11.jpg'
 import Blog12 from '@/assets/images/blog/blog-img-12.jpg'
 import VideoBlog from '@/assets/videos/video-blog.mp4'
+import { ref, onMounted } from 'vue'
+import LoaderView from '@/components/LoaderView.vue';
 
+const isLoading = ref(true);
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000); 
+}); 
 
 </script>
 <style>

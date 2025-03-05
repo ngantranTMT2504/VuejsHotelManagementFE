@@ -15,7 +15,7 @@
         <div class="content">
             <div class="d-flex justify-content-end pb-3 header">
                 <div class="d-flex align-items-center">
-                    <RouterLink to="/booking" class="main-btn me-4">Booking</RouterLink>
+                    <RouterLink to="/" class="main-btn me-4"> Home</RouterLink>
                     <a class="position-relative border-0 me-4 text-dark ">
                         <i class="bi bi-envelope fs-5"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -41,8 +41,8 @@
                 </template>
             </Suspense>
             <!-- Copyright -->
-            <div class="copyright-section text-capitalize">
-                <p>2025 <a href="#">©️ Kim Ngan</a> All Rights Reserved</p>
+            <div class="copyright-section fixed-bottom bg-transparent ">
+                <p class="">2025 <a class="text-center">©️ Kim Ngan</a> All Rights Reserved</p>
             </div>
         </div>
     </main>
@@ -104,6 +104,7 @@ const clearToken = () => {
 .copyright-section {
     background-color: white;
     padding: 1.25rem 0 .3125rem;
+    margin-left: 18rem;
 }
 
 .copyright-section a {

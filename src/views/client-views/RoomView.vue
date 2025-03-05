@@ -1,4 +1,7 @@
 <template>
+    <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <main>
         <div class="pb-5 position-relative">
             <h1 class="text-dark position-absolute title-room ">Rooms</h1>
@@ -8,8 +11,8 @@
             <div class="row">
                 <div class=" col-lg-8">
                     <div  v-for="type in typeRooms" class="room-item position-relative">
-                        <div class="img-room">
-                            <img :src="type?.imageRoom" alt="" class="img-fluid">
+                        <div class="img-room overflow-hidden">
+                            <img :src="type?.imageRoom" alt="" class="w-100" style="height:500px ;">
                         </div>
                         <div class="room-content row py-4">
                             <h4 class="fw-semibold">{{ type?.name }}</h4>
@@ -20,7 +23,7 @@
                             <p class="fs-5">{{ type?.description }}</p>
                             
                             <div>
-                                <RouterLink to="/booking" type="submit" class="button-primary ">
+                                <RouterLink to="/booking" type="submit" class="button-primary px-3">
                                     Booking now 
                                 </RouterLink>
                             </div>
@@ -86,9 +89,17 @@ import axios from 'axios';
 import { RouterLink } from 'vue-router'
 import { ref, onMounted} from 'vue'
 
+import LoaderView from '@/components/LoaderView.vue';
+
+const isLoading = ref(true);
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000); 
+}); 
+
 
 const typeRooms = ref([]);
-
 const API_GETALL = "http://localhost:5287/api/TypeRoom/GetTypeRooms";
 
 const typeRoomList = async () => {
@@ -99,7 +110,6 @@ const typeRoomList = async () => {
         console.error("Lỗi!", error);
     }
 };
-
 
 onMounted(typeRoomList)
 </script>

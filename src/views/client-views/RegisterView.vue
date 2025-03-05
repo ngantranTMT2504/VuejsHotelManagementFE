@@ -1,4 +1,7 @@
 <template>
+    <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <div class="main">
         <div class="container pt-5">
             <div class="row justify-content-center align-items-center">
@@ -31,8 +34,13 @@
 
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
-                                    <input type="password" v-model="form.Password" class="form-control" id="password"
-                                        @input="validateField('Password')">
+                                    <div class="position-relative">
+                                        <input :type="showPassword ? 'text' : 'password'" v-model="form.Password"
+                                            class="form-control" id="password" @input="validateField('Password')">
+                                        <button type="button"
+                                            class="btn position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                            @click="togglePassword"> <i class="bi bi-eye"></i></button>
+                                    </div>
                                     <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
                                 </div>
 
@@ -42,14 +50,14 @@
                                         <input type="tel" v-model="form.PhoneNumber" class="form-control" id="phone"
                                             @input="validateField('PhoneNumber')">
                                         <small v-if="errors.PhoneNumber" class="text-danger">{{ errors.PhoneNumber
-                                            }}</small>
+                                        }}</small>
                                     </div>
                                     <div class="col-lg-6 mb-3">
                                         <label for="dateOfBirth" class="form-label">Date of birth</label>
                                         <input type="date" v-model="form.DateOfBirth" class="form-control"
                                             @change="validateField('DateOfBirth')">
                                         <small v-if="errors.DateOfBirth" class="text-danger">{{ errors.DateOfBirth
-                                            }}</small>
+                                        }}</small>
                                     </div>
                                 </div>
 
@@ -84,9 +92,16 @@
 </template>
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import LoaderView from '@/components/LoaderView.vue';
 
+const isLoading = ref(true);
+onMounted(() => {
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 2000);
+});
 const API_REGISTER = "http://localhost:5287/api/Authenticate/register";
 const router = useRouter();
 
@@ -100,6 +115,11 @@ const form = ref({
 });
 
 const errors = ref({});
+const showPassword = ref(false);
+
+const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+};
 
 const validateField = (field) => {
     switch (field) {
@@ -110,7 +130,7 @@ const validateField = (field) => {
             errors.value.Email = form.value.Email ? "" : "Email không được để trống";
             break;
         case "Password":
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
             errors.value.Password = form.value.Password
                 ? passwordRegex.test(form.value.Password)
                     ? ""
@@ -143,7 +163,7 @@ const validateField = (field) => {
 };
 
 const register = async () => {
-    Object.keys(form.value).forEach(field => validateField(field)); 
+    Object.keys(form.value).forEach(field => validateField(field));
 
     if (Object.values(errors.value).some(error => error)) {
         console.warn("Có lỗi, không gửi form:", errors.value);

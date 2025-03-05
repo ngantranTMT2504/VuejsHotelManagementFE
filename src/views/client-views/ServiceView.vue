@@ -1,4 +1,7 @@
-<template >
+<template>
+     <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <main>
         <div class="pb-5 position-relative">
             <h1 class="text-dark position-absolute title-room ">Services</h1>
@@ -8,20 +11,18 @@
             <div class="row">
                 <div class=" col-lg-8">
                     <div v-for="service in services" class="room-item">
-                        <div class="img-room">
-                            <img :src="service?.imageService" alt="" class="img-fluid">
+                        <div class="img-room overflow-hidden">
+                            <img :src="service?.imageService" alt="" class="w-100" style="height:500px ;">
                         </div>
                         <div class="room-content row py-4">
                             <h4 class="fw-semibold">{{ service?.name }}</h4>
                             <p class="fs-5 price-service">{{ service?.price }}</p>
                             <p class="fs-5">{{ service?.description }}</p>
-
                             <div>
                                 <RouterLink to="/booking" type="submit" class="button-primary">Booking now</RouterLink>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
                 <div class="col-lg-4 text-white">
                     <div class="form-wrapper py-5 rounded-4 ">
@@ -117,7 +118,8 @@
                                 <p class="fw-semibold text-white">You price</p>
                                 <p class="text-white">Total : $70</p>
                             </div>
-                            <RouterLink to="/booking" type="submit" class="btn-payment w-100">Booking</RouterLink>
+                            <RouterLink to="/booking" type="submit" class="btn-payment w-100 text-center">Booking
+                            </RouterLink>
                         </form>
                     </div>
                 </div>
@@ -129,12 +131,18 @@
 import ServiceBanner from '@/assets/images/services/service-banner.jpg'
 import axios from 'axios';
 import { RouterLink } from 'vue-router'
-import { ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
+import LoaderView from '@/components/LoaderView.vue';
+
+const isLoading = ref(true);
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000); 
+}); 
 
 const API_GETALL = "http://localhost:5287/api/Service/GetServices"
-const services= ref([])
-
-
+const services = ref([])
 
 const serviceList = async () => {
     try {
@@ -147,8 +155,8 @@ const serviceList = async () => {
 
 onMounted(serviceList)
 </script>
-<style >
-.price-service{
+<style>
+.price-service {
     color: var(--secondary-color);
 }
 </style>

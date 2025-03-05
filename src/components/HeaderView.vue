@@ -10,7 +10,7 @@
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon fa-solid fa-bars-staggered"></span>
                     </button>
-                    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <div class="collapse navbar-collapse justify-content-end  align-item-center" id="navbarNav">
                         <ul class="navbar-nav menu-navbar-nav">
                             <li class="nav-item">
                                 <RouterLink class="nav-link active" to="/">Home</RouterLink>
@@ -33,18 +33,27 @@
                             <li class="nav-item">
                                 <RouterLink class="nav-link" to="/contact">Contact</RouterLink>
                             </li>
-                            <li class="nav-item mt-3 mt-lg-0">
+                            <li class="nav-item ">
                                 <RouterLink class="nav-link" to="/booking-detail">Your booking</RouterLink>
                             </li>
                             <li class="nav-item mt-3 mt-lg-0" v-if="!userName.length > 0">
                                 <RouterLink class="main-btn" to="/login">Login</RouterLink>
                             </li>
-                            <div class="d-flex justify-content-center" v-if="userName.length > 0">
-                                <p class="mt-2">{{ userName }}</p>
-                                <li class="nav-item ">
-                                    <RouterLink class="main-btn" to="/login" @click="clearToken()">Logout</RouterLink>
-                                </li>
-                            </div>
+                            <li class="nav-item dropdown" v-if="userName.length > 0">
+                                <a class="nav-link dropdown-toggle p-0" href="#" id="navbarDarkDropdownMenuLink"
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle fs-4"></i>
+                                     {{ userName }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item mt-3 mt-lg-0" v-if="role == 'Admin'">
+                                        <RouterLink class="dropdown-item" to="/admin">Admin</RouterLink>
+                                    </li>
+                                    <li class="nav-item ">
+                                        <RouterLink class="dropdown-item" to="/login" @click="clearToken()">Logout</RouterLink>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -53,33 +62,33 @@
     </header>
 </template>
 <script setup>
-import { RouterLink} from 'vue-router';
+import { RouterLink } from 'vue-router';
 import logo from '@/assets/images/about/logo.png'
-import { ref, onMounted} from 'vue';
-import {jwtDecode} from "jwt-decode";
-import {Role, TOKEN, Email} from "@/utils/constants.js";
+import { ref, onMounted } from 'vue';
+import { jwtDecode } from "jwt-decode";
+import { Role, TOKEN, Email } from "@/utils/constants.js";
 
 const userName = ref('');
+const role = ref('')
 if (sessionStorage.getItem(TOKEN)) {
     const token = sessionStorage.getItem(TOKEN);
     const decoded = jwtDecode(token);
     userName.value = decoded[Email];
+    role.value = decoded[Role]
     console.log(decoded);
 }
-onMounted(()=> {
-  const nav = document.querySelector(".navbar");
-  const handleScroll = () => {
-    if(document.documentElement.scrollTop > 50) {
-      nav.classList.add("header-scrolled")
-    } else {
-      nav.classList.remove("header-scrolled")
+
+onMounted(() => {
+    const nav = document.querySelector(".navbar");
+    const handleScroll = () => {
+        if (document.documentElement.scrollTop > 50) {
+            nav.classList.add("header-scrolled")
+        } else {
+            nav.classList.remove("header-scrolled")
+        }
     }
-  }
-  window.addEventListener("scroll", handleScroll);
-}); 
-
-
-
+    window.addEventListener("scroll", handleScroll);
+});
 
 const clearToken = () => {
     sessionStorage.removeItem(TOKEN);

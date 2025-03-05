@@ -1,4 +1,7 @@
 <template>
+     <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <div>
         <div v-if="bookings.length <= 0" class="py-5">
             <p class="text-center fs-4 my-5 text-danger">You have not made any previous bookings</p>
@@ -13,31 +16,27 @@
             <table class="table-design w-100">
                 <thead>
                     <tr>
-                        <th>Booking ID</th>
-                        <th>Client ID</th>
+                        <th>STT</th>
                         <th>Check-in Date</th>
                         <th>Check-out Date</th>
                         <th>Total Price</th>
                         <th>Total Rooms</th>
-                        <th>Services</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="booking in bookings" :key="booking.id">
-                        <td>{{ booking.id }}</td>
-                        <td>{{ booking.userID }}</td>
+                    <tr v-for="(booking,index) in bookings" :key="booking.id">
+                        <td>{{ index + 1 }}</td>
                         <td>{{ formatDate(booking.dateCheckin) }}</td>
                         <td>{{ formatDate(booking.dateCheckout) }}</td>
                         <td>{{ formatPrice(booking.totalPrice) }}</td>
                         <td>{{ booking.totalRoom }}</td>
                         <td>{{ booking.statusName }}</td>
-                        <td>{{ booking.statusName }}</td>
                         <td>
                             <div class="action btn d-flex gap-4" v-if="booking.status == 0">
                                 <a class="btn btn-warning text-dark px-2 py-1 rounded"
-                                    @click="cancelBooking (booking.id)">
+                                    @click="cancelBooking(booking.id)">
                                     cancel
                                 </a>
                             </div>
@@ -51,32 +50,37 @@
     </div>
 </template>
 <script setup>
-
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import {jwtDecode} from "jwt-decode";
-import {TOKEN, UserId} from "@/utils/constants.js";
+import { jwtDecode } from "jwt-decode";
+import { TOKEN, UserId } from "@/utils/constants.js";
+import LoaderView from '@/components/LoaderView.vue';
 
+const isLoading = ref(true);
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000); 
+}); 
 const bookings = ref([]);
 const router = useRouter();
-
 const API_GETALL = "http://localhost:5287/api/Booking/GetBooking";
 const API_EDIT = "http://localhost:5287/api/Booking/UpdateBooking";
 const API_GET_ID = "http://localhost:5287/api/Booking/GetBooking/";
 
-
-const userId = ref('');
-if (sessionStorage.getItem(TOKEN)) {
-    const token = sessionStorage.getItem(TOKEN);
-    const decoded = jwtDecode(token);
-    userId.value = decoded[UserId];
-    // console.log(decoded);
-}
+// const userId = ref('');
 
 const bookingList = async () => {
     try {
-        const userId = userId.value;
+        let userId = "";
+        if (sessionStorage.getItem(TOKEN)) {
+            const token = sessionStorage.getItem(TOKEN);
+            const decoded = jwtDecode(token);
+            userId = decoded[UserId];
+            console.log(decoded[UserId]);
+        }
+        // userId = userId.value;
         const response = await axios.get(API_GETALL);
         response.data.forEach(element => {
 

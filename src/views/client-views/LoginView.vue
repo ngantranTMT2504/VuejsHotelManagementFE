@@ -1,4 +1,7 @@
 <template>
+    <div v-if="isLoading" class="position-absolute loader">
+        <LoaderView />
+    </div>
     <div class="main h-100">
         <div class="container pt-5 ">
             <div class="row justify-content-center align-items-center">
@@ -23,9 +26,13 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" v-model="form.Password" 
-                                        placeholder="Enter your password" @input="validateField('Password')">
-                                    <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
+                                    <div class="position-relative">
+                                        <input class="form-control" id="password" v-model="form.Password"  :type="showPassword ? 'text' : 'password'"
+                                            placeholder="Enter your password" @input="validateField('Password')">
+                                        <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                            @click="togglePassword"> <i class="bi bi-eye"></i></button>
+                                    </div>
+                                        <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
                                 </div>
                                 <button type="submit" class="button-primary w-100">Login</button>
 
@@ -42,7 +49,9 @@
                                     </button>
                                 </div>
                             </form>
-                            <p class="text-center mt-3">Already have an account yet? <RouterLink to="/register">Register</RouterLink></p>
+                            <p class="text-center mt-3">Already have an account yet? <RouterLink to="/register">Register
+                                </RouterLink>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -52,27 +61,39 @@
 </template>
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
-import { useRouter , RouterLink} from 'vue-router';
+import { ref , onMounted} from 'vue';
+import { useRouter, RouterLink } from 'vue-router';
 import CryptoJS from 'crypto-js';
-import {jwtDecode} from "jwt-decode";
-import {Role, TOKEN} from "@/utils/constants.js";
+import { jwtDecode } from "jwt-decode";
+import { Role, TOKEN } from "@/utils/constants.js";
+import LoaderView from '@/components/LoaderView.vue';
+
+const isLoading = ref(true);
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 2000); 
+}); 
 
 const API_LOGIN = "http://localhost:5287/api/Authenticate/login";
 const router = useRouter();
-
 const form = ref({
     EmailAddress: "",
     Password: "",
 });
 
 const errors = ref({});
+const showPassword = ref(false);
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value;
+};
 
 const resultLogin = {
-  data: {
-    token: "",
-    expiration: Date,
-  }
+    data: {
+        token: "",
+        expiration: Date,
+    }
 };
 
 const validateField = (field) => {
@@ -81,19 +102,19 @@ const validateField = (field) => {
             errors.value.Email = form.value.EmailAddress ? "" : "Email không được để trống";
             break;
         case "Password":
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
             errors.value.Password = form.value.Password
                 ? passwordRegex.test(form.value.Password)
                     ? ""
                     : "Password phải ít nhất 8 kí tự với số, chữ hoa, chữ thường và kí tự đặt biệt"
                 : "Password không được để trống";
-            break; 
+            break;
     }
 };
 
 const login = async () => {
 
-    Object.keys(form.value).forEach(field => validateField(field)); 
+    Object.keys(form.value).forEach(field => validateField(field));
 
     if (Object.values(errors.value).some(error => error)) {
         console.warn("Có lỗi, không gửi form:", errors.value);
@@ -108,8 +129,8 @@ const login = async () => {
         }
         console.log(payload);
         const response = await axios.post(API_LOGIN, payload);
-        if ( response?.data?.token?.length > 0) {
-          sessionStorage.setItem(TOKEN, response.data.token);
+        if (response?.data?.token?.length > 0) {
+            sessionStorage.setItem(TOKEN, response.data.token);
         }
         const decoded = jwtDecode(response?.data?.token);
         if (decoded[Role] === 'Admin') {
@@ -126,16 +147,16 @@ const login = async () => {
 };
 
 function encryptData(plainText, base64Key) {
-  var key = CryptoJS.enc.Base64.parse(base64Key);
-  var iv = CryptoJS.lib.WordArray.random(16);
-  var encrypted = CryptoJS.AES.encrypt(plainText, key, {
-    iv: iv,
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7
-  });
-  var encryptedData = iv.concat(encrypted.ciphertext);
+    var key = CryptoJS.enc.Base64.parse(base64Key);
+    var iv = CryptoJS.lib.WordArray.random(16);
+    var encrypted = CryptoJS.AES.encrypt(plainText, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    var encryptedData = iv.concat(encrypted.ciphertext);
 
-  return CryptoJS.enc.Base64.stringify(encryptedData);
+    return CryptoJS.enc.Base64.stringify(encryptedData);
 }
 
 </script>
