@@ -53,8 +53,8 @@ import { useRoute, useRouter, RouterLink } from "vue-router";
 
 const API_URL_EDIT = "http://localhost:5287/api/Service/UpdateService";
 const API_GET_ID = "http://localhost:5287/api/Service/GetService/";
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload";
-const UPLOAD_PRESET = "hotel_preset";
+const CLOUDINARY_URL = "";
+const UPLOAD_PRESET = "";
 const route = useRoute();
 const router = useRouter();
 

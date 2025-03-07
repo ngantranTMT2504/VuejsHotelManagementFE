@@ -69,8 +69,8 @@ const form = ref({
 });
 
 const errors = ref({});
-const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dnt5lyoes/image/upload";
-const UPLOAD_PRESET = "hotel_preset";
+const CLOUDINARY_URL = "";
+const UPLOAD_PRESET = "";
 const API_ADD = "http://localhost:5287/api/TypeRoom/AddTypeRoom";
 const router = useRouter();
 
